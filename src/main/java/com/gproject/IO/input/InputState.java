@@ -1,4 +1,4 @@
-package com.gproject.IO.output.input;
+package com.gproject.IO.input;
 
 public class InputState {
 

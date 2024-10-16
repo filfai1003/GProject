@@ -1,18 +1,19 @@
 package com.gproject.core;
 
 import com.gproject.gameLogic.GameLoop;
-import com.gproject.IO.output.input.InputState;
+import com.gproject.IO.input.InputState;
+import com.gproject.menu.MenuManager;
+import com.gproject.menu.MenuTree;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GameStateManager {
-    private List<GameState> currentState;
+    private Deque<GameState> currentState;
     private GameLoop gameLoop;
+    private MenuManager menuManager;
 
     public GameStateManager() {
-        this.currentState = new ArrayList<>();
+        this.currentState = new ArrayDeque<>();
         this.currentState.add(GameState.MENU);
     }
 
@@ -20,21 +21,20 @@ public class GameStateManager {
         return this.currentState.add(newState);
     }
 
-    public GameState pullState() {return this.currentState.removeLast();}
+    public GameState pullState() {
+        return this.currentState.removeLast();  // Metodo di Deque
+    }
 
     public void update(Map<String, InputState> input) {
-        switch (currentState.getLast()) {
+        switch (currentState.getLast()) {  // Metodo di Deque
             case MENU:
-                updateMenu();
+                updateMenu(input);
                 break;
             case PLAYING:
-                updateGame();
-                break;
-            case OPTIONS:
-                updateOptions();
+                updateGame(input);
                 break;
             case PAUSE:
-                updatePause();
+                updatePause(input);
                 break;
             case EXIT:
                 System.exit(0);
@@ -43,15 +43,12 @@ public class GameStateManager {
     }
 
     public void render() {
-        switch (currentState.getLast()) {
+        switch (currentState.getLast()) {  // Metodo di Deque
             case MENU:
                 renderMenu();
                 break;
             case PLAYING:
                 renderGame();
-                break;
-            case OPTIONS:
-                renderOptions();
                 break;
             case PAUSE:
                 renderPause();
@@ -59,35 +56,44 @@ public class GameStateManager {
         }
     }
 
-    private void updateMenu() {
-        // TODO Logica del menu
-    }
-
-    private void updateGame() {
-        if (gameLoop != null) {
-            gameLoop.update();
+    private void updateMenu(Map<String, InputState> input) {
+        if (menuManager == null) {
+            menuManager = new MenuManager(MenuTree.createMainMenuTree());
         }
-        throw new RuntimeException("gameLoop is null");
+        menuManager.update(input);
     }
 
-    private void updateOptions() {
-        // TODO Logica delle opzioni
+    private void updateGame(Map<String, InputState> input) {
+        if (gameLoop == null) {
+            throw new RuntimeException("gameLoop is null");
+        }
+        gameLoop.update(input);
     }
 
-    private void updatePause() {
-        // TODO Logica della pausa
+    private void updatePause(Map<String, InputState> input) {
+        if (menuManager == null) {
+            menuManager = new MenuManager(MenuTree.createPauseMenuTree());
+        }
+        menuManager.update(input);
     }
 
     private void renderMenu() {
-        // TODO Rendering del menu
+        if (menuManager == null) {
+            throw new RuntimeException("menuManager is null");
+        }
+        System.out.println(menuManager.getCurrentMenuNode().getName());
+        for (int i = 0; i < menuManager.getCurrentMenuNode().getChildrens().size(); i++) {
+            String txt = "";
+            if (menuManager.getChildrenSelected() == i) {
+                txt += " *";
+            }
+            txt += menuManager.getCurrentMenuNode().getChildrens().get(i).getName();
+            System.out.println(txt);
+        }
     }
 
     private void renderGame() {
         // TODO Rendering del gioco (es. giocatore, nemici, ecc.)
-    }
-
-    private void renderOptions() {
-        // TODO Rendering delle opzioni
     }
 
     private void renderPause() {

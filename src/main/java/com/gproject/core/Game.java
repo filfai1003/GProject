@@ -1,6 +1,6 @@
 package com.gproject.core;
 
-import com.gproject.IO.output.input.InputManager;
+import com.gproject.IO.input.InputManager;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.glfw.GLFW.*;
@@ -15,6 +15,9 @@ public class Game {
         if (!glfwInit()) {
             throw new IllegalStateException("Unable to initialize GLFW");
         }
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);  // OpenGL 3.3
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         window = glfwCreateWindow(800, 800, "2D Game", 0, 0);
         if (window == 0) {
@@ -33,6 +36,9 @@ public class Game {
             glfwSetWindowPos(window, posX, posY);
         }
         glfwShowWindow(window);
+        if (glfwGetCurrentContext() == 0) {
+            throw new RuntimeException("Failed to set current OpenGL context.");
+        }
         GL.createCapabilities();
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -65,3 +71,7 @@ public class Game {
         game.cleanup();
     }
 }
+
+/*
+* TODO Sembra che gli input non vengano presi dentro MenuManager.update
+* TODO L'avvio da errore, probablmente perche viene avviato con una versione di java scorretta, avvia tramite terminale con "./gradlew run" con java 17.0.12*/
