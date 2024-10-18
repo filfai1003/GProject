@@ -14,36 +14,51 @@ public class MenuManager {
     }
 
     public void update(Map<String, InputState> input) {
-        if (input.get("UP").isPressed()) {
-            if (childrenSelected > 0 || (currentMenuNode.getFather() != null && childrenSelected == 0)) {
-                childrenSelected--;
-            }
+        if (input.get("ENTER").isPressed()) {
+            select();
+        } else if (input.get("UP").isPressed()) {
+            up();
         } else if (input.get("DOWN").isPressed()) {
-            if (childrenSelected < currentMenuNode.getChildrens().size() - 1) {
-                childrenSelected++;
-            }
+            down();
         }
     }
 
-    public void select() {
-        if (childrenSelected < -1 || childrenSelected >= currentMenuNode.getChildrens().size()) {
-            throw new IndexOutOfBoundsException("childrenSelected is out of bounds: " + childrenSelected + "/" + currentMenuNode.getChildrens().size());
+    public boolean up() {
+        if (childrenSelected > 0 || (currentMenuNode.getFather() != null && childrenSelected == 0)) {
+            childrenSelected--;
+            return true;
         }
-        if (childrenSelected == -1) {
-            back();
-            return;
-        }
-        if (currentMenuNode.getChildrens().get(childrenSelected) == null){
-            throw new IndexOutOfBoundsException("currentNode childrenSelected is null");
-        }
-        currentMenuNode = currentMenuNode.getChildrens().get(childrenSelected);
+        return false;
     }
 
-    public void back() {
+    public boolean down() {
+        if (childrenSelected < currentMenuNode.getChildrens().size() - 1) {
+            childrenSelected++;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean back() {
         if (currentMenuNode.getFather() == null) {
-            throw new IndexOutOfBoundsException("currentNode father is null");
+            return false;
         }
         currentMenuNode = currentMenuNode.getFather();
+        childrenSelected = -1;
+        return true;
+    }
+
+    public boolean select() {
+        if (childrenSelected < -1 || childrenSelected >= currentMenuNode.getChildrens().size()) {
+            throw new IndexOutOfBoundsException("childrenSelected is out of bounds: " + childrenSelected + "/" + currentMenuNode.getChildrens().size());
+        } else if (childrenSelected == -1) {
+            return back();
+        } else if (currentMenuNode.getChildrens().get(childrenSelected) == null) {
+            return false;
+        }
+        currentMenuNode = currentMenuNode.getChildrens().get(childrenSelected);
+        childrenSelected = -1;
+        return true;
     }
 
     public MenuNode getCurrentMenuNode() {

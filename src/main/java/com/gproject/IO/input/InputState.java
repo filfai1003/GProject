@@ -10,7 +10,7 @@ public class InputState {
     public InputState() {
         pressed = false;
         held = false;
-        released = false;
+        released = true;
         justReleased = false;
     }
 

@@ -24,10 +24,10 @@ public class InputManager {
         // TODO Carica l'associazione dei tasti da file di salvataggio json se disponibile
         keyBindings = new HashMap<>();
 
-        keyBindings.put("UP", GLFW_KEY_W);
-        keyBindings.put("DOWN", GLFW_KEY_S);
-        keyBindings.put("LEFT", GLFW_KEY_A);
-        keyBindings.put("RIGHT", GLFW_KEY_D);
+        keyBindings.put("UP", GLFW_KEY_UP);
+        keyBindings.put("DOWN", GLFW_KEY_DOWN);
+        keyBindings.put("LEFT", GLFW_KEY_LEFT);
+        keyBindings.put("RIGHT", GLFW_KEY_RIGHT);
         keyBindings.put("ENTER", GLFW_KEY_ENTER);
 
         return keyBindings;

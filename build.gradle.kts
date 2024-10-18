@@ -3,6 +3,12 @@ plugins {
     application
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+
 group = "com.gproject"
 version = "1.0-SNAPSHOT"
 
@@ -12,16 +18,22 @@ repositories {
 
 dependencies {
     // LWJGL core
-    implementation("org.lwjgl:lwjgl:3.3.1")
+    /*implementation("org.lwjgl:lwjgl:3.3.1")
     implementation("org.lwjgl:lwjgl-glfw:3.3.1")
     implementation("org.lwjgl:lwjgl-opengl:3.3.1")
-    implementation("org.lwjgl:lwjgl-openal:3.3.1")
+    implementation("org.lwjgl:lwjgl-openal:3.3.1")*/
+    implementation ("org.lwjgl:lwjgl:3.3.0")
+    implementation ("org.lwjgl:lwjgl-glfw:3.3.0")
+    implementation ("org.lwjgl:lwjgl-opengl:3.3.0")
 
     // Librerie native per Linux (GLFW nativo)
-    runtimeOnly("org.lwjgl:lwjgl:3.3.1:natives-linux")
+    /*runtimeOnly("org.lwjgl:lwjgl:3.3.1:natives-linux")
     runtimeOnly("org.lwjgl:lwjgl-glfw:3.3.1:natives-linux")
     runtimeOnly("org.lwjgl:lwjgl-opengl:3.3.1:natives-linux")
-    runtimeOnly("org.lwjgl:lwjgl-openal:3.3.1:natives-linux")
+    runtimeOnly("org.lwjgl:lwjgl-openal:3.3.1:natives-linux")*/
+    runtimeOnly ("org.lwjgl:lwjgl:3.3.0:natives-linux")
+    runtimeOnly ("org.lwjgl:lwjgl-glfw:3.3.0:natives-linux")
+    runtimeOnly ("org.lwjgl:lwjgl-opengl:3.3.0:natives-linux")
 }
 
 tasks.withType<JavaCompile> {

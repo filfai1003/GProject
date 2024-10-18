@@ -18,7 +18,6 @@ public class Game {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);  // OpenGL 3.3
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         window = glfwCreateWindow(800, 800, "2D Game", 0, 0);
         if (window == 0) {
             throw new RuntimeException("Unable to create the GLFW window");
@@ -48,6 +47,7 @@ public class Game {
 
     public void loop() {
         while (!glfwWindowShouldClose(window)) {
+            inputManager.updateInputs(window);
             gameStateManager.update(inputManager.getInputStates());
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -71,7 +71,3 @@ public class Game {
         game.cleanup();
     }
 }
-
-/*
-* TODO Sembra che gli input non vengano presi dentro MenuManager.update
-* TODO L'avvio da errore, probablmente perche viene avviato con una versione di java scorretta, avvia tramite terminale con "./gradlew run" con java 17.0.12*/
