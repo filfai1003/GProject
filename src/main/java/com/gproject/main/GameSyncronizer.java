@@ -5,6 +5,7 @@ import com.gproject.io.output.MenuRender;
 import com.gproject.menu.Menu;
 
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
+import static org.lwjgl.opengl.GL11.*;
 
 public class GameSyncronizer {
 
@@ -15,7 +16,10 @@ public class GameSyncronizer {
         InputManager inputManager = new InputManager(window);
         menu();
         while (state != GameState.EXIT) {
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
             inputManager.update();
+
             switch (state) {
                 case MENU:
                     menu.update(inputManager.getInput());
@@ -25,20 +29,22 @@ public class GameSyncronizer {
                 case PLAY:
                     break;
             }
+
             glfwSwapBuffers(window);
         }
     }
 
-    public static void menu(){
+
+    public static void menu() {
         menu = new Menu();
         state = GameState.MENU;
     }
 
-    public static void play(int level){
+    public static void play(int level) {
         state = GameState.PLAY;
     }
 
-    public static void exit(){
+    public static void exit() {
         state = GameState.EXIT;
     }
 }

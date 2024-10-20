@@ -19,13 +19,15 @@ repositories {
 dependencies {
     implementation ("com.google.code.gson:gson:2.8.9")
 
-    implementation ("org.lwjgl:lwjgl:3.2.3")
-    implementation ("org.lwjgl:lwjgl-glfw:3.2.3")
-    implementation ("org.lwjgl:lwjgl-opengl:3.2.3")
+    implementation ("org.lwjgl:lwjgl:3.3.1")
+    implementation ("org.lwjgl:lwjgl-glfw:3.3.1")
+    implementation ("org.lwjgl:lwjgl-opengl:3.3.1")
+    implementation ("org.lwjgl:lwjgl-stb:3.3.1")
 
-    runtimeOnly ("org.lwjgl:lwjgl:3.2.3:natives-linux")
-    runtimeOnly ("org.lwjgl:lwjgl-glfw:3.2.3:natives-linux")
-    runtimeOnly ("org.lwjgl:lwjgl-opengl:3.2.3:natives-linux")
+    runtimeOnly ("org.lwjgl:lwjgl:3.3.1:natives-linux")
+    runtimeOnly ("org.lwjgl:lwjgl-glfw:3.3.1:natives-linux")
+    runtimeOnly ("org.lwjgl:lwjgl-opengl:3.3.1:natives-linux")
+    runtimeOnly ("org.lwjgl:lwjgl-stb:3.3.1:natives-linux")
 }
 
 tasks.withType<JavaCompile> {

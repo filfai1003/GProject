@@ -84,8 +84,6 @@ public class InputManager {
     public Map<String, Object> getInput() {
         Map<String, Object> inputs = new HashMap<>();
 
-        System.out.println("Key UP state: " + keyStates.get(KEY_UP));
-
         inputs.put("KB_UP", mergeKeyStates(keyStates.get(KEY_W), keyStates.get(KEY_UP)));
         inputs.put("KB_LEFT", mergeKeyStates(keyStates.get(KEY_A), keyStates.get(KEY_LEFT)));
         inputs.put("KB_DOWN", mergeKeyStates(keyStates.get(KEY_S), keyStates.get(KEY_DOWN)));
