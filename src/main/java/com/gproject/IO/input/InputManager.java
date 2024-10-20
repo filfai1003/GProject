@@ -12,7 +12,7 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class InputManager {
 
-    private Map<String, InputState> inputStates;
+    private final Map<String, InputState> inputStates;
     private Map<String, Integer> keyBindings;
 
     public InputManager() {
@@ -53,9 +53,7 @@ public class InputManager {
         try (Writer writer = new FileWriter("keybindings.json")) {
             Gson gson = new Gson();
             gson.toJson(keyBindings, writer);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException ignored) {}
     }
 
     public Map<String, InputState> getInputStates() {

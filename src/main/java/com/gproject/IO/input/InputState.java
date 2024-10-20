@@ -4,14 +4,14 @@ public class InputState {
 
     private boolean pressed;
     private boolean held;
-    private boolean released;
     private boolean justReleased;
+    private boolean released;
 
     public InputState() {
         pressed = false;
         held = false;
-        released = true;
         justReleased = false;
+        released = true;
     }
 
     // Metodi getter
@@ -23,34 +23,38 @@ public class InputState {
         return held;
     }
 
-    public boolean isReleased() {
-        return released;
-    }
-
     public boolean isJustReleased() {
         return justReleased;
     }
 
+    public boolean isReleased() {
+        return released;
+    }
+
     public void update(boolean isKeyDown) {
         if (isKeyDown) {
-            if (!held) {
-                pressed = true;
+            if (pressed){
+                pressed = false;
                 held = true;
+                justReleased = false;
+                released = false;
+            } else {
+                pressed = true;
+                held = false;
+                justReleased = false;
+                released = false;
+            }
+        } else {
+            if (justReleased){
+                pressed = false;
+                held = false;
+                justReleased = false;
+                released = true;
             } else {
                 pressed = false;
-            }
-            released = false;
-            justReleased = false;
-        } else {
-            if (held) {
-                released = true;
                 held = false;
-            } else {
-                released = false;
-                justReleased = false;
-            }
-            if (!held && !released) {
                 justReleased = true;
+                released = false;
             }
         }
     }

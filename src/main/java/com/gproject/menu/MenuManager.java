@@ -23,49 +23,42 @@ public class MenuManager {
         }
     }
 
-    public boolean up() {
+    public void up() {
         if (childrenSelected > 0 || (currentMenuNode.getFather() != null && childrenSelected == 0)) {
             childrenSelected--;
-            return true;
         }
-        return false;
     }
 
-    public boolean down() {
+    public void down() {
         if (childrenSelected < currentMenuNode.getChildrens().size() - 1) {
             childrenSelected++;
-            return true;
         }
-        return false;
     }
 
-    public boolean back() {
+    public void back() {
         if (currentMenuNode.getFather() == null) {
-            return false;
+            return;
         }
         currentMenuNode = currentMenuNode.getFather();
         childrenSelected = -1;
-        return true;
     }
 
-    public boolean select() {
+    public void select() {
         if (childrenSelected < -1 || childrenSelected >= currentMenuNode.getChildrens().size()) {
             throw new IndexOutOfBoundsException("childrenSelected is out of bounds: " + childrenSelected + "/" + currentMenuNode.getChildrens().size());
         } else if (childrenSelected == -1) {
-            return back();
+            back();
+            return;
         }
 
         MenuNode selectedNode = currentMenuNode.getChildrens().get(childrenSelected);
 
         if (selectedNode.isActionNode()) {
             selectedNode.getAction().run();
-            return true;
         } else if (selectedNode.getChildrens() != null) {
             currentMenuNode = selectedNode;
             childrenSelected = -1;
-            return true;
         }
-        return false;
     }
 
     public MenuNode getCurrentMenuNode() {

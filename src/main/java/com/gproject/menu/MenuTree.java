@@ -16,9 +16,7 @@ public class MenuTree {
         MenuNode node2 = new MenuNode("Option", mainMenuNode, new ArrayList<>());
         mainMenuNode.getChildrens().add(node2);
 
-        MenuNode node3 = new MenuNode("Exit", mainMenuNode, () -> {
-            stateManager.changeState(GameState.EXIT);
-        });
+        MenuNode node3 = new MenuNode("Exit", mainMenuNode, () -> stateManager.changeState(GameState.EXIT));
         mainMenuNode.getChildrens().add(node3);
 
 
@@ -26,18 +24,18 @@ public class MenuTree {
         node2.getChildrens().add(node21);
 
         MenuNode node211 = new MenuNode("UP", mainMenuNode, () -> {
+            stateManager.setChangeKeyManager("UP", stateManager.getCurrentState());
             stateManager.changeState(GameState.CHANGEKEY);
-            stateManager.setChangeKeyManager("UP");
         });
         node21.getChildrens().add(node211);
         MenuNode node212 = new MenuNode("DOWN", mainMenuNode, () -> {
+            stateManager.setChangeKeyManager("DOWN", stateManager.getCurrentState());
             stateManager.changeState(GameState.CHANGEKEY);
-            stateManager.setChangeKeyManager("DOWN");
         });
         node21.getChildrens().add(node212);
         MenuNode node213 = new MenuNode("SELECT", mainMenuNode, () -> {
+            stateManager.setChangeKeyManager("SELECT", stateManager.getCurrentState());
             stateManager.changeState(GameState.CHANGEKEY);
-            stateManager.setChangeKeyManager("SELECT");
         });
         node21.getChildrens().add(node213);
 
@@ -46,6 +44,6 @@ public class MenuTree {
 
     public static MenuNode createPauseMenuTree(GameStateManager stateManager) {
         // TODO
-        return null;
+        return createMainMenuTree(stateManager);
     }
 }

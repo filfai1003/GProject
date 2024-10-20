@@ -1,6 +1,8 @@
 package com.gproject.core;
 
 import com.gproject.IO.input.InputManager;
+import com.gproject.IO.output.GameRendering;
+import com.gproject.IO.output.MenuRendering;
 import com.gproject.gameLogic.GameLoop;
 import com.gproject.IO.input.InputState;
 import com.gproject.menu.ChangeKeyManager;
@@ -9,25 +11,28 @@ import com.gproject.menu.MenuTree;
 
 import java.util.*;
 
+
 public class GameStateManager {
-    private InputManager inputManager;
+    private final MenuRendering menuRendering;
+    private final GameRendering gameRendering;
+    private final InputManager inputManager;
     private GameState currentState;
     private MenuManager menuManager;
     private ChangeKeyManager changeKeyManager;
     private GameLoop gameLoop;
 
     public GameStateManager(InputManager inputManager) {
-        this.currentState = GameState.MENU;
+        this.inputManager = inputManager;
+        this.menuRendering = new MenuRendering();
+        this.gameRendering = new GameRendering();
         this.menuManager = new MenuManager(MenuTree.createMainMenuTree(this));
+        this.currentState = GameState.MENU;
     }
 
     public void update() {
         Map<String, InputState> input = inputManager.getInputStates();
         switch (currentState) {
-            case MENU:
-                updateMenuOrPause(input);
-                break;
-            case PAUSE:
+            case MENU, PAUSE:
                 updateMenuOrPause(input);
                 break;
             case PLAYING:
@@ -42,13 +47,13 @@ public class GameStateManager {
     public void render() {
         switch (currentState) {
             case MENU, PAUSE:
-                renderMenuOrPause();
-                break;
-            case PLAYING:
-                renderGame();
+                menuRendering.renderMenu();
                 break;
             case CHANGEKEY:
-                renderKeyChange();
+                menuRendering.renderKeyChange();
+                break;
+            case PLAYING:
+                gameRendering.renderGame();
                 break;
         }
     }
@@ -65,28 +70,20 @@ public class GameStateManager {
         changeKeyManager.update(input);
     }
 
-    private void renderMenuOrPause() {
-        // TODO Rendering della schermata dei menu
-    }
-
-    private void renderGame() {
-        // TODO Rendering del gioco (es. giocatore, nemici, ecc.)
-    }
-
-    private void renderKeyChange() {
-        // TODO Rendering della schermata del cambio dei tasti
-    }
-
     public void changeState(GameState currentState) {
         this.currentState = currentState;
         switch (currentState) {
             case MENU:
-                this.menuManager = new MenuManager(MenuTree.createMainMenuTree(this));
+                if (this.menuManager == null) {
+                    this.menuManager = new MenuManager(MenuTree.createMainMenuTree(this));
+                }
                 this.gameLoop = null;
                 this.changeKeyManager = null;
                 break;
             case PAUSE:
-                this.menuManager = new MenuManager(MenuTree.createPauseMenuTree(this));
+                if (this.menuManager == null) {
+                    this.menuManager = new MenuManager(MenuTree.createPauseMenuTree(this));
+                }
                 this.changeKeyManager = null;
                 break;
             case PLAYING:
@@ -100,7 +97,11 @@ public class GameStateManager {
         }
     }
 
-    public void setChangeKeyManager(String key) {
-        this.changeKeyManager = new ChangeKeyManager(key, this.inputManager);
+    public void setChangeKeyManager(String key, GameState currentState) {
+        this.changeKeyManager = new ChangeKeyManager(key, this.inputManager, this,  currentState);
+    }
+
+    public GameState getCurrentState() {
+        return currentState;
     }
 }

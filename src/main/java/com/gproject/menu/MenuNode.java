@@ -3,10 +3,10 @@ package com.gproject.menu;
 import java.util.List;
 
 public class MenuNode {
-    private String name;
-    private MenuNode father;
-    private List<MenuNode> childrens;
-    private Runnable action;
+    private final String name;
+    private final MenuNode father;
+    private final List<MenuNode> childrens;
+    private final Runnable action;
 
     // Constructor for submenu nodes
     public MenuNode(String name, MenuNode father, List<MenuNode> children) {
