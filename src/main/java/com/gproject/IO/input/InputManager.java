@@ -1,5 +1,10 @@
 package com.gproject.IO.input;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.*;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,16 +25,18 @@ public class InputManager {
         }
     }
 
-    public Map<String, Integer> loadKeyBinding(){
-        // TODO Carica l'associazione dei tasti da file di salvataggio json se disponibile
-        keyBindings = new HashMap<>();
-
-        keyBindings.put("UP", GLFW_KEY_UP);
-        keyBindings.put("DOWN", GLFW_KEY_DOWN);
-        keyBindings.put("LEFT", GLFW_KEY_LEFT);
-        keyBindings.put("RIGHT", GLFW_KEY_RIGHT);
-        keyBindings.put("ENTER", GLFW_KEY_ENTER);
-
+    public Map<String, Integer> loadKeyBinding() {
+        // Carica il file JSON se esiste, altrimenti usa i valori predefiniti
+        try (Reader reader = new FileReader("keybindings.json")) {
+            Gson gson = new Gson();
+            Type type = new TypeToken<Map<String, Integer>>(){}.getType();
+            keyBindings = gson.fromJson(reader, type);
+        } catch (IOException e) {
+            keyBindings = new HashMap<>();
+            keyBindings.put("UP", GLFW_KEY_UP);
+            keyBindings.put("DOWN", GLFW_KEY_DOWN);
+            keyBindings.put("ENTER", GLFW_KEY_ENTER);
+        }
         return keyBindings;
     }
 
@@ -39,6 +46,15 @@ public class InputManager {
             int key = entry.getValue();
             boolean isKeyDown = glfwGetKey(window, key) == GLFW_PRESS;
             inputStates.get(action).update(isKeyDown);
+        }
+    }
+
+    public void saveKeyBindings() {
+        try (Writer writer = new FileWriter("keybindings.json")) {
+            Gson gson = new Gson();
+            gson.toJson(keyBindings, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

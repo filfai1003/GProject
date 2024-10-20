@@ -41,14 +41,14 @@ public class Game {
         GL.createCapabilities();
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-        gameStateManager = new GameStateManager();
         inputManager = new InputManager();
+        gameStateManager = new GameStateManager(inputManager);
     }
 
     public void loop() {
         while (!glfwWindowShouldClose(window)) {
             inputManager.updateInputs(window);
-            gameStateManager.update(inputManager.getInputStates());
+            gameStateManager.update();
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

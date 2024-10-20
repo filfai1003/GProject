@@ -53,12 +53,19 @@ public class MenuManager {
             throw new IndexOutOfBoundsException("childrenSelected is out of bounds: " + childrenSelected + "/" + currentMenuNode.getChildrens().size());
         } else if (childrenSelected == -1) {
             return back();
-        } else if (currentMenuNode.getChildrens().get(childrenSelected) == null) {
-            return false;
         }
-        currentMenuNode = currentMenuNode.getChildrens().get(childrenSelected);
-        childrenSelected = -1;
-        return true;
+
+        MenuNode selectedNode = currentMenuNode.getChildrens().get(childrenSelected);
+
+        if (selectedNode.isActionNode()) {
+            selectedNode.getAction().run();
+            return true;
+        } else if (selectedNode.getChildrens() != null) {
+            currentMenuNode = selectedNode;
+            childrenSelected = -1;
+            return true;
+        }
+        return false;
     }
 
     public MenuNode getCurrentMenuNode() {
