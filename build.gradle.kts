@@ -33,7 +33,7 @@ tasks.withType<JavaCompile> {
 }
 
 application {
-    mainClass.set("com.gproject.core.Game")
+    mainClass.set("com.gproject.main.Initializer")
 
     // Imposta il percorso delle librerie native
     applicationDefaultJvmArgs = listOf(
