@@ -37,7 +37,7 @@ public class Initializer {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         // Imposta il colore di default per la pulizia del buffer (nero trasparente)
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
 
         // Imposta la proiezione ortografica per il rendering 2D
         glMatrixMode(GL_PROJECTION);

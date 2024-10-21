@@ -3,6 +3,8 @@ package com.gproject.menu;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.gproject.menu.SettingsManager.saveAdjustableValues;
+
 public class MenuNode {
     private String title;
     private List<MenuNode> children;
@@ -58,15 +60,21 @@ public class MenuNode {
         return currentValue;
     }
 
+    public void setCurrentValue(int currentValue) {
+        this.currentValue = currentValue;
+    }
+
     public void incrementValue() {
         if (currentValue < maxValue) {
             currentValue += stepValue;
+            saveAdjustableValues(this);
         }
     }
 
     public void decrementValue() {
         if (currentValue > minValue) {
             currentValue -= stepValue;
+            saveAdjustableValues(this);
         }
     }
 
