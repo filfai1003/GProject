@@ -42,7 +42,7 @@ public class Initializer {
         // Imposta la proiezione ortografica per il rendering 2D
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glOrtho(0, 800, 800, 0, -1, 1);  // Coordinate 2D
+        glOrtho(0, 800, 0, 800, -1, 1);  // Coordinate 2D
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 

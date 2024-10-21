@@ -1,2 +1,2 @@
-Frame Rate Max = 240
-Brightness = 0
+Frame Rate Max = 30
+Brightness = 5

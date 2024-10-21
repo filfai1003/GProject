@@ -4,6 +4,9 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.gproject.main.GameSyncronizer.setMaxFrameRate;
+import static org.lwjgl.opengl.GL11.glClearColor;
+
 public class SettingsManager {
 
     public static Map<String, Integer> loadAdjustableValues() {
@@ -35,6 +38,7 @@ public class SettingsManager {
             e.printStackTrace();
         }
 
+        applyChanges(adjustableValues);
         return adjustableValues;
     }
 
@@ -63,6 +67,28 @@ public class SettingsManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        applyChanges(loadedValues);
+    }
+
+    public static void applyChanges(Map<String, Integer> settings) {
+        if (settings.containsKey("Frame Rate Max")) {
+            int maxFrameRate = settings.get("Frame Rate Max");
+            apllyMaxFrameRate(maxFrameRate);
+        }
+
+        if (settings.containsKey("Brightness")) {
+            int brightness = settings.get("Brightness");
+            apllyBrightness(brightness);
+        }
+    }
+
+    public static void apllyMaxFrameRate(int maxFrameRate) {
+        setMaxFrameRate(maxFrameRate);
+    }
+
+    public static void apllyBrightness(int brightness) {
+        float adjustedBrightness = 0.1f + (brightness / 10.0f) * 0.9f;
+        glClearColor(adjustedBrightness, adjustedBrightness, adjustedBrightness, 1.0f);
     }
 
 }

@@ -33,7 +33,7 @@ public class Menu {
             }
         }
 
-        if (inputs.get("MOUSE_LEFT") == KeyState.JUST_PRESSED || inputs.get("KB_ENTER") == KeyState.JUST_PRESSED) {
+        if (inputs.get("KB_ENTER") == KeyState.JUST_PRESSED) {
             if (currentNode.getChildren().get(selectedIndex).isRunnable()){
                 currentNode.getChildren().get(selectedIndex).executeAction();
             } else if (!currentNode.getChildren().get(selectedIndex).getChildren().isEmpty()){
@@ -42,7 +42,7 @@ public class Menu {
             }
         }
 
-        if (inputs.get("KB_ESC") == KeyState.JUST_PRESSED || inputs.get("MOUSE_RIGHT") == KeyState.JUST_PRESSED) {
+        if (inputs.get("KB_ESC") == KeyState.JUST_PRESSED) {
             if (currentNode.getParent() != null){
                 currentNode = currentNode.getParent();
             }
