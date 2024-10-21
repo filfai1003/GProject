@@ -1,0 +1,2 @@
+Frame Rate Max = 240
+Brightness = 0
