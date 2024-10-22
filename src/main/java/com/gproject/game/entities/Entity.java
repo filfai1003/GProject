@@ -47,6 +47,14 @@ public class Entity {
         return velocityY;
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
     public void setX(double x) {
         this.x = x;
     }
@@ -69,10 +77,6 @@ public class Entity {
 
     public boolean isCollidable() {
         return collidable;
-    }
-
-    public void resolveCollision(Entity entity) {
-        // TODO entity.resolveCollision
     }
 }
 

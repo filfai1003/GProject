@@ -46,10 +46,10 @@ public class Render {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
 
         GL11.glBegin(GL11.GL_QUADS);
-        GL11.glTexCoord2f(0, 1); GL11.glVertex2f(x, y);
-        GL11.glTexCoord2f(1, 1); GL11.glVertex2f(x + w, y);
-        GL11.glTexCoord2f(1, 0); GL11.glVertex2f(x + w, y + h);
-        GL11.glTexCoord2f(0, 0); GL11.glVertex2f(x, y + h);
+        GL11.glTexCoord2f(0, 0); GL11.glVertex2f(x, y);           // In basso a sinistra
+        GL11.glTexCoord2f(1, 0); GL11.glVertex2f(x + w, y);       // In basso a destra
+        GL11.glTexCoord2f(1, 1); GL11.glVertex2f(x + w, y + h);   // In alto a destra
+        GL11.glTexCoord2f(0, 1); GL11.glVertex2f(x, y + h);
         GL11.glEnd();
     }
 
@@ -82,7 +82,7 @@ public class Render {
                 float imageHeight = imageSize[1];
                 float scaledWidth = size * (imageWidth / imageHeight);
 
-                renderImage(xOffset, y, -1, size, imagePath);
+                renderImage(xOffset, y - size, -1, size, imagePath); // Sottrai size da y
 
                 xOffset += scaledWidth;
             } else {
@@ -90,6 +90,7 @@ public class Render {
             }
         }
     }
+
 
 
     private static int loadTextureFromFile(String path) {

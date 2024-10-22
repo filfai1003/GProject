@@ -1,10 +1,8 @@
 package com.gproject.game.entities;
 
 public class LivingEntity extends Entity {
-    private int health;
-    private int maxHealth;
-    private int maxSpeed;
-    private int acceleration;
+    private int health, maxHealth;
+    private int maxSpeed, acceleration;
     private boolean enemy;
 
     public LivingEntity(float x, float y, int width, int height, boolean affectedByGravity, boolean collidable, float mass, int health, int maxHealth, int maxSpeed, int acceleration, boolean enemy) {

@@ -1,13 +1,16 @@
 package com.gproject.game;
 
-import com.gproject.game.entities.Entity;
+import com.gproject.game.Physics.Chunk;
+import com.gproject.game.Physics.Physics;
+import com.gproject.game.entities.Block;
+import com.gproject.game.entities.Player;
 
-import java.util.List;
 import java.util.Map;
 
 public class Game {
-    private Entity player;
-    private List<Entity> entities;
+    private Player player;
+    private Chunk[][] chunks;
+    private Block[][] blocks;
 
     public Game(int level) {
         // TODO Game Constructor
@@ -17,6 +20,7 @@ public class Game {
         seconds = Math.min(seconds, 0.04);
         // TODO Game.update
         // manage input
-        Physics.update(entities, seconds);
+        // manage ia and player
+        Physics.update(player, chunks, blocks, seconds);
     }
 }
