@@ -7,13 +7,13 @@ import com.gproject.io.output.MenuRender;
 import com.gproject.menu.Menu;
 
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
+import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL11.*;
 
 public class GameSyncronizer {
 
     public static long window;
-    private static long lastFrameTime;
-    private static int maxFramerate;
+    private static long frameDuration = 1_000_000_000L / 30;
     private static GameState state = GameState.MENU;
     private static Menu menu;
     private static Game game;
@@ -23,10 +23,9 @@ public class GameSyncronizer {
         InputManager inputManager = new InputManager(window);
         menu();
 
-        lastFrameTime = System.nanoTime();
-        long frameDuration = 1_000_000_000L / maxFramerate;
+        long lastFrameTime = System.nanoTime();
 
-        while (state != GameState.EXIT) {
+        while (!glfwWindowShouldClose(window) && state != GameState.EXIT) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             inputManager.update();
@@ -41,9 +40,11 @@ public class GameSyncronizer {
                     break;
 
                 case PLAY:
+                    lastFrameTime = System.nanoTime();
                     game.update(inputManager.getInput(), deltaTime);
-                    GameRender.render();
+                    GameRender.render(game);
                     break;
+                case EXIT:
             }
 
             glfwSwapBuffers(window);
@@ -56,8 +57,6 @@ public class GameSyncronizer {
                     e.printStackTrace();
                 }
             }
-
-            lastFrameTime = System.nanoTime();
         }
     }
 
@@ -66,8 +65,8 @@ public class GameSyncronizer {
         state = GameState.MENU;
     }
 
-    public static void play(int level) {
-        game = new Game(level);
+    public static void play() {
+        game = new Game();
         state = GameState.PLAY;
     }
 
@@ -76,6 +75,6 @@ public class GameSyncronizer {
     }
 
     public static void setMaxFrameRate(int maxFramerate) {
-        GameSyncronizer.maxFramerate = maxFramerate;
+        frameDuration = 1_000_000_000L / maxFramerate;
     }
 }

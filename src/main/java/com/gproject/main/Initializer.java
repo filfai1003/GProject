@@ -24,14 +24,14 @@ public class Initializer {
         }
 
         glfwMakeContextCurrent(window);
-
         GL.createCapabilities();
+
+        glfwSwapInterval(0);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
-
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glOrtho(0, 800, 800, 0, -1, 1);  // Coordinate 2D
@@ -39,23 +39,7 @@ public class Initializer {
         glLoadIdentity();
 
         glEnable(GL_TEXTURE_2D);
-
-        long monitor = glfwGetPrimaryMonitor();
-        GLFWVidMode videoMode = glfwGetVideoMode(monitor);
-
-        if (videoMode != null) {
-            int screenWidth = videoMode.width();
-            int screenHeight = videoMode.height();
-            int windowWidth = 800;
-            int windowHeight = 800;
-            int posX = (screenWidth - windowWidth) / 2;
-            int posY = (screenHeight - windowHeight) / 2;
-            glfwSetWindowPos(window, posX, posY);
-        }
-
-        glfwShowWindow(window);
     }
-
 
 
     public void cleanup() {

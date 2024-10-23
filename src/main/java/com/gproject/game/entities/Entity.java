@@ -2,18 +2,17 @@ package com.gproject.game.entities;
 
 public class Entity {
 
+    private static int nextId = 0;
+    protected final int id;
     protected double x, y;
     protected int width, height;
     protected double velocityX, velocityY;
     protected boolean affectedByGravity;
     protected boolean collidable;
-    protected final int id;
-    protected float mass;
 
-    private static int nextId = 0;
 
-    public Entity(float x, float y, int width, int height, boolean affectedByGravity, boolean collidable, float mass) {
-        this.id = generateId();
+    public Entity(float x, float y, int width, int height, boolean affectedByGravity, boolean collidable) {
+        this.id = nextId++;
         this.x = x;
         this.y = y;
         this.width = width;
@@ -22,14 +21,9 @@ public class Entity {
         this.velocityY = 0;
         this.affectedByGravity = affectedByGravity;
         this.collidable = collidable;
-        this.mass = mass;
     }
 
     public void update() {}
-
-    private synchronized int generateId() {
-        return nextId++;
-    }
 
     public double getX() {
         return x;
@@ -77,6 +71,14 @@ public class Entity {
 
     public boolean isCollidable() {
         return collidable;
+    }
+
+    public void setCollidable(boolean collidable) {
+        this.collidable = collidable;
+    }
+
+    public void setAffectedByGravity(boolean affectedByGravity) {
+        this.affectedByGravity = affectedByGravity;
     }
 }
 

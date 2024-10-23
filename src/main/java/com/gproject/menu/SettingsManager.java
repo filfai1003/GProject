@@ -73,17 +73,13 @@ public class SettingsManager {
     public static void applyChanges(Map<String, Integer> settings) {
         if (settings.containsKey("Frame Rate Max")) {
             int maxFrameRate = settings.get("Frame Rate Max");
-            apllyMaxFrameRate(maxFrameRate);
+            setMaxFrameRate(maxFrameRate);
         }
 
         if (settings.containsKey("Brightness")) {
             int brightness = settings.get("Brightness");
             apllyBrightness(brightness);
         }
-    }
-
-    public static void apllyMaxFrameRate(int maxFrameRate) {
-        setMaxFrameRate(maxFrameRate);
     }
 
     public static void apllyBrightness(int brightness) {

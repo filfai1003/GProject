@@ -46,9 +46,9 @@ public class Render {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
 
         GL11.glBegin(GL11.GL_QUADS);
-        GL11.glTexCoord2f(0, 0); GL11.glVertex2f(x, y);           // In basso a sinistra
-        GL11.glTexCoord2f(1, 0); GL11.glVertex2f(x + w, y);       // In basso a destra
-        GL11.glTexCoord2f(1, 1); GL11.glVertex2f(x + w, y + h);   // In alto a destra
+        GL11.glTexCoord2f(0, 0); GL11.glVertex2f(x, y);
+        GL11.glTexCoord2f(1, 0); GL11.glVertex2f(x + w, y);
+        GL11.glTexCoord2f(1, 1); GL11.glVertex2f(x + w, y + h);
         GL11.glTexCoord2f(0, 1); GL11.glVertex2f(x, y + h);
         GL11.glEnd();
     }
