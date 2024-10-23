@@ -14,8 +14,12 @@ public class MenuTree {
         MenuNode settings = new MenuNode("Settings");
         MenuNode frameRate = new MenuNode("Frame Rate Max", 30, 240, 60, 30);
         MenuNode brightness = new MenuNode("Brightness", 0, 10, 5, 1);
+        MenuNode showFPS = new MenuNode("Show FPS", 0, 1, 0, 1);
+        MenuNode cameraSpeed = new MenuNode("Camera Speed", 1, 20, 0, 1);
         settings.addChild(frameRate);
         settings.addChild(brightness);
+        settings.addChild(showFPS);
+        settings.addChild(cameraSpeed);
 
         MenuNode exit = new MenuNode("Exit", () -> GameSyncronizer.exit());
 

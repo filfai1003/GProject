@@ -62,7 +62,7 @@ public class Physics {
     private static void manageChangeOfChunk(List<Entity>[][] chunks, int i, int j) {
         for (int k = 0; k < chunks[i][j].size(); k++) {
             Entity entity = chunks[i][j].get(k);
-            if (entity.getX() < i*CHUNK_SIZE || (i+1)*CHUNK_SIZE < entity.getX() || entity.getY() < j*CHUNK_SIZE || (j+1)*CHUNK_SIZE < entity.getY()){
+            if (entity.getX() < i * CHUNK_SIZE || (i + 1) * CHUNK_SIZE < entity.getX() || entity.getY() < j * CHUNK_SIZE || (j + 1) * CHUNK_SIZE < entity.getY()) {
                 chunks[i][j].remove(entity);
                 k--;
                 int newI = (int) (entity.getX() / CHUNK_SIZE);
@@ -166,31 +166,51 @@ public class Physics {
         startY = Math.max(0, startY);
         endY = Math.min(blocks[0].length - 1, endY);
 
+        double topDistance = entity.getY() - startY * BLOCK_SIZE;
+        double bottomDistance = endY * BLOCK_SIZE - (entity.getY() + entity.getHeight());
+        double rightDistance = entity.getX() - startX * BLOCK_SIZE;
+        double leftDistance = endX * BLOCK_SIZE - (entity.getX() + entity.getWidth());
+
+        boolean topCollision = false;
+        boolean bottomCollision = false;
+        boolean rightCollision = false;
+        boolean leftCollision = false;
+
+
         try {
-            for (int i = startX; i < endX; i++) {
-                if (blocks[i][endY]) {
-                    entity.setY((endY) * BLOCK_SIZE - entity.getHeight());
-                    entity.setVelocityY(0);
-                    break;
-                } else if (blocks[i][startY]) {
-                    entity.setY((startY+1) * BLOCK_SIZE);
-                    entity.setVelocityY(0);
-                    break;
+            for (int i = startX+1; i < endX; i++) {
+                if (blocks[i][startY] && entity.getVelocityY() < 0) {
+                    topCollision = true;
+
+                }
+                if (blocks[i][endY] && entity.getVelocityY() > 0) {
+                    bottomCollision = true;
+                }
+            }
+            for (int i = startY+1; i < endY; i++) {
+                if (blocks[startX][i] && entity.getVelocityX() < 0) {
+                    leftCollision = true;
+                }
+                if (blocks[endX][i] && entity.getVelocityX() > 0) {
+                    rightCollision = true;
                 }
             }
 
-            for (int i = startY; i < endY; i++) {
-                if (blocks[endX][i]) {
-                    entity.setX((endX) * BLOCK_SIZE - entity.getWidth());
-                    entity.setVelocityX(0);
-                    break;
-                } else if (blocks[startX][i]) {
-                    entity.setX((startX+1) * BLOCK_SIZE);
-                    entity.setVelocityX(0);
-                    break;
-                }
+            if (topCollision && !bottomCollision || topCollision && topDistance < bottomDistance) {
+                entity.setY(startY * BLOCK_SIZE + BLOCK_SIZE);
+                entity.setVelocityY(0);
+            } else if (bottomCollision) {
+                entity.setY(endY * BLOCK_SIZE - entity.getHeight());
+                entity.setVelocityY(0);
             }
-        } catch (Exception e) {}
-        // TODO collisione a sinistra e sopra non funziona
+            if (leftCollision && !rightCollision || leftCollision && leftDistance < rightDistance) {
+                entity.setX(startX * BLOCK_SIZE + BLOCK_SIZE);
+                entity.setVelocityX(0);
+            } else if (rightCollision) {
+                entity.setX(endX * BLOCK_SIZE - entity.getWidth());
+                entity.setVelocityX(0);
+            }
+        } catch (Exception e) {
+        }
     }
 }

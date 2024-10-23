@@ -14,6 +14,7 @@ public class MenuNode {
     private int currentValue;
     private int stepValue;
     private Runnable action;
+    private String[] options;
 
     public MenuNode(String title) {
         this.title = title;

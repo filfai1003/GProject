@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.gproject.main.GameSyncronizer.menu;
+
 public class Game {
     private Camera camera;
     private Player player;
@@ -16,26 +18,33 @@ public class Game {
     private boolean[][] blocks;
 
     public Game() {
-        camera = new Camera(0, 0, 0.5);
-        player = new Player(550, 500, 10, 20, true, true, 100, 100, 100, false);
-        chunks = new List[10][10];
+        camera = new Camera(0, 0, 1);
+        player = new Player(550, 500, 20, 40, true, true, 100, 100, 2500, false);
+        chunks = new List[100][100];
         for (int i = 0; i < chunks.length; i++) {
             for (int j = 0; j < chunks[0].length; j++) {
                 chunks[i][j] = new ArrayList<>();
             }
         }
-        blocks = new boolean[100][80];
-        for (int i = 50; i < 60; i++) {
-            blocks[50][i] = true;
-            blocks[60][i] = true;
-            blocks[i][60] = true;
+        blocks = new boolean[200][200];
+        for (int i = 0; i < 200; i++) {
+            blocks[i][199] = true;
+            blocks[i][0] = true;
+            blocks[0][i] = true;
+            blocks[199][i] = true;
         }
+
+
         chunks[0][0].add(player);
         // TODO 9 Game Constructor
     }
 
     public void update(Map<String, Object> inputs, double seconds) {
         seconds = Math.min(seconds, 0.0334);
+        camera.update(player, seconds);
+        if (inputs.get("KB_ESC") == KeyState.JUST_PRESSED) {
+            menu();
+        }
         if (inputs.get("KB_UP") == KeyState.JUST_PRESSED) {
             camera.zoom();
         }

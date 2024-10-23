@@ -13,10 +13,12 @@ import static org.lwjgl.opengl.GL11.*;
 public class GameSyncronizer {
 
     public static long window;
+    private static boolean showFPS = false;
     private static long frameDuration = 1_000_000_000L / 30;
     private static GameState state = GameState.MENU;
     private static Menu menu;
     private static Game game;
+    private static float deltaTime = 0;
 
     public static void start(long w) {
         window = w;
@@ -31,7 +33,7 @@ public class GameSyncronizer {
             inputManager.update();
 
             long currentFrameTime = System.nanoTime();
-            float deltaTime = (currentFrameTime - lastFrameTime) / 1_000_000_000.0f;
+            deltaTime = (currentFrameTime - lastFrameTime) / 1_000_000_000.0f;
 
             switch (state) {
                 case MENU:
@@ -61,12 +63,16 @@ public class GameSyncronizer {
     }
 
     public static void menu() {
-        menu = new Menu();
+        if (menu == null) {
+            menu = new Menu();
+        }
         state = GameState.MENU;
     }
 
     public static void play() {
-        game = new Game();
+        if (game == null) {
+            game = new Game();
+        }
         state = GameState.PLAY;
     }
 
@@ -74,7 +80,28 @@ public class GameSyncronizer {
         state = GameState.EXIT;
     }
 
+    public static int getFrameRate() {
+        if (deltaTime > 0) {
+            int frameRate = Math.round(1.0f / deltaTime);
+            return (int) (Math.floor(frameRate / 10.0f) * 10);
+        }
+        return 0;
+    }
+
+    public static boolean getShowFPS() {
+        return showFPS;
+    }
+
     public static void setMaxFrameRate(int maxFramerate) {
         frameDuration = 1_000_000_000L / maxFramerate;
     }
+
+    public static void setShowFPS(int sFPS) {
+        if (sFPS == 0) {
+            showFPS = false;
+        } else if (sFPS == 1) {
+            showFPS = true;
+        }
+    }
+
 }

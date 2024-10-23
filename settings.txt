@@ -1,2 +1,6 @@
-Frame Rate Max = 240
+Camera Speed = 20
+Frame Rate Max = 60
 Brightness = 5
+Show FPS = 1
+Fullscreen = 1
+FullScreen = 0

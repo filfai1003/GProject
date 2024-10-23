@@ -82,7 +82,7 @@ public class Render {
                 float imageHeight = imageSize[1];
                 float scaledWidth = size * (imageWidth / imageHeight);
 
-                renderImage(xOffset, y - size, -1, size, imagePath); // Sottrai size da y
+                renderImage(xOffset, y, -1, size, imagePath); // Sottrai size da y
 
                 xOffset += scaledWidth;
             } else {

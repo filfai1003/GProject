@@ -1,11 +1,18 @@
 package com.gproject.menu;
 
+import com.gproject.main.GameSyncronizer;
+import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.system.MemoryStack;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.gproject.main.GameSyncronizer.setMaxFrameRate;
+import static com.gproject.main.GameSyncronizer.*;
+import static com.gproject.menu.Settings.setCameraSpeed;
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.system.MemoryStack.stackPush;
 
 public class SettingsManager {
 
@@ -80,11 +87,29 @@ public class SettingsManager {
             int brightness = settings.get("Brightness");
             apllyBrightness(brightness);
         }
+
+        if (settings.containsKey("Show FPS")) {
+            int showFPS = settings.get("Show FPS");
+            setShowFPS(showFPS);
+        }
+
+        if (settings.containsKey("Camera Speed")) {
+            int speed = settings.get("Camera Speed");
+            setCameraSpeed(speed);
+        }
     }
 
     public static void apllyBrightness(int brightness) {
         float adjustedBrightness = 0.1f + (brightness / 10.0f) * 0.9f;
         glClearColor(adjustedBrightness, adjustedBrightness, adjustedBrightness, 1.0f);
     }
-
+    public static void applyFullScreen(int fullScreen) {
+        if (fullScreen == 1) {
+            long monitor = glfwGetPrimaryMonitor();
+            GLFWVidMode vidMode = glfwGetVideoMode(monitor);
+            glfwSetWindowMonitor(window, monitor, 0, 0, vidMode.width(), vidMode.height(), GLFW_DONT_CARE);
+        } else {
+            glfwSetWindowMonitor(window, 0, 0, 0, 1000, 1000, GLFW_DONT_CARE);
+        }
+    }
 }
