@@ -6,6 +6,8 @@ import com.gproject.game.entities.Entity;
 import com.gproject.game.entities.Player;
 import com.gproject.main.GameSyncronizer;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import static com.gproject.game.Physics.Costants.*;
@@ -21,9 +23,9 @@ public class GameRender {
         }
 
         Player player = game.getPlayer();
-        List<Entity>[][] chunks = game.getChunks();
+        HashSet<Entity>[][] chunks = game.getChunks();
         Camera camera = game.getCamera();
-        boolean[][] blocks = game.getBlocks();
+        //boolean[][] blocks = game.getBlocks();
 
         int firstChunksX = (int) Math.floor(player.getX() / CHUNK_SIZE) - CHUNKS_TO_RENDER;
         int firstChunksY = (int) Math.floor(player.getY() / CHUNK_SIZE) - CHUNKS_TO_RENDER;
@@ -45,30 +47,10 @@ public class GameRender {
                     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
                 }
 
-                for (int k = 0; k < chunks[i][j].size(); k++) {
-                    Entity entity = chunks[i][j].get(k);
+                List<Entity> entities = new ArrayList<>(chunks[i][j]);
+                for (Entity entity : entities) {
                     int[] imageParameter = camera.adapt((int) entity.getX(), (int) entity.getY(), entity.getWidth(), entity.getHeight());
                     renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], "assets/colors/red.png");
-                }
-            }
-        }
-
-        int firstBlocksX = (int) Math.floor(player.getX() / BLOCK_SIZE) - BLOCKS_TO_RENDER;
-        int firstBlockY = (int) Math.floor(player.getY() / BLOCK_SIZE) - BLOCKS_TO_RENDER;
-        int lastBlockX = (int) Math.floor(player.getX() / BLOCK_SIZE) + BLOCKS_TO_RENDER + 1;
-        int lastBlockY = (int) Math.floor(player.getY() / BLOCK_SIZE) + BLOCKS_TO_RENDER + 1;
-
-        firstBlocksX = Math.max(0, firstBlocksX);
-        firstBlockY = Math.max(0, firstBlockY);
-        lastBlockX = Math.min(blocks.length, lastBlockX);
-        lastBlockY = Math.min(blocks[0].length, lastBlockY);
-
-        for (int i = firstBlocksX; i < lastBlockX; i++) {
-            for (int j = firstBlockY; j < lastBlockY; j++) {
-                if (blocks[i][j]) {
-                    int[] imageParameter;
-                    imageParameter = camera.adapt((int) i*BLOCK_SIZE, (int) j*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-                    renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], "assets/colors/black.png");
                 }
             }
         }

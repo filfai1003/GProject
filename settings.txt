@@ -1,4 +1,4 @@
-Camera Speed = 20
+Camera Speed = 15
 Frame Rate Max = 60
 Brightness = 5
 Show FPS = 1

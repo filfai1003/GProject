@@ -9,18 +9,19 @@ public class Entity {
     protected double velocityX, velocityY;
     protected boolean affectedByGravity;
     protected boolean collidable;
+    protected boolean onGround = false;
+    protected int velocityLimit, friction;
 
-
-    public Entity(float x, float y, int width, int height, boolean affectedByGravity, boolean collidable) {
+    public Entity(double x, double y, int width, int height, boolean affectedByGravity, boolean collidable, int velocityLimit, int friction) {
         this.id = nextId++;
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.velocityX = 0;
-        this.velocityY = 0;
         this.affectedByGravity = affectedByGravity;
         this.collidable = collidable;
+        this.velocityLimit = velocityLimit;
+        this.friction = friction;
     }
 
     public void update() {}
@@ -79,6 +80,22 @@ public class Entity {
 
     public void setAffectedByGravity(boolean affectedByGravity) {
         this.affectedByGravity = affectedByGravity;
+    }
+
+    public boolean isOnGround() {
+        return onGround;
+    }
+
+    public void setOnGround(boolean onGround) {
+        this.onGround = onGround;
+    }
+
+    public int getVelocityLimit() {
+        return velocityLimit;
+    }
+
+    public int getFriction() {
+        return friction;
     }
 }
 

@@ -21,8 +21,8 @@ public class Camera {
         int[] w = new int[1];
         int[] h = new int[1];
         GLFW.glfwGetWindowSize(window, w, h);
-        int xObjective = (int) (player.getX() - w[0]/2);
-        int yObjective = (int) (player.getY() - h[0]/2);
+        int xObjective = (int) (player.getX() + player.getWidth() - w[0]/2); // TODO
+        int yObjective = (int) (player.getY() + player.getHeight() - h[0]/2); // TODO
         xObjective = (int) (xObjective + w[0]/2*(1-1/zoom));
         yObjective = (int) (yObjective + h[0]/2*(1-1/zoom));
 
