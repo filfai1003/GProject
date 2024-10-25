@@ -1,6 +1,5 @@
 package com.gproject.game;
 
-import com.gproject.game.Physics.Physics;
 import com.gproject.game.entities.Block;
 import com.gproject.game.entities.Entity;
 import com.gproject.game.entities.Player;
@@ -33,6 +32,7 @@ public class Game {
     public void update(Map<String, Object> inputs, double seconds) {
         seconds = Math.min(seconds, 0.0334);
         camera.update(player, seconds);
+        System.out.println(player);
         if (inputs.get("KB_ESC") == KeyState.JUST_PRESSED) {
             menu();
         }
@@ -40,6 +40,9 @@ public class Game {
             camera.zoom();
         }
         if (inputs.get("KB_DOWN") == KeyState.JUST_PRESSED) {
+            camera.deZoom();
+        }
+        if (inputs.get("KB_SPACE") == KeyState.JUST_PRESSED) {
             camera.deZoom();
         }
         if (inputs.get("KB_W") == KeyState.JUST_PRESSED) {

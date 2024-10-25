@@ -1,4 +1,4 @@
-package com.gproject.game.Physics;
+package com.gproject.game;
 
 public class Costants {
     // Physics

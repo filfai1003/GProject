@@ -1,9 +1,9 @@
 package com.gproject.game.entities;
 
 public class LivingEntity extends Entity {
-    private int health, maxHealth;
-    private int acceleration, jumpSpeed;
-    private boolean enemy;
+    protected int health, maxHealth;
+    protected int acceleration, jumpSpeed;
+    protected boolean enemy;
 
     public LivingEntity(double x, double y, int width, int height, boolean affectedByGravity, boolean collidable, int velocityLimit, int frictionLimit, int health, int maxHealth, int acceleration, int jumpSpeed, boolean enemy) {
         super(x, y, width, height, affectedByGravity, collidable, velocityLimit, frictionLimit);
@@ -22,10 +22,11 @@ public class LivingEntity extends Entity {
         this.velocityX -= acceleration * seconds;
     }
 
-    public void jump() {
-        onGround =true; // TODO
+    public boolean jump() {
         if (onGround) {
             this.velocityY = -jumpSpeed;
+            return true;
         }
+        return false;
     }
 }

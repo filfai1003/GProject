@@ -1,4 +1,4 @@
-package com.gproject.game.Physics;
+package com.gproject.game;
 
 import com.gproject.game.entities.Block;
 import com.gproject.game.entities.Entity;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import static com.gproject.game.Physics.Costants.*;
+import static com.gproject.game.Costants.*;
 
 public class Physics {
 
@@ -31,22 +31,16 @@ public class Physics {
         }
 
         // Gravitation and speedUpdate
-        int count = 0;
+        HashSet<Entity> entities = new HashSet<>();
         for (int i = firstChunksX; i < lastChunksX; i++) {
             for (int j = firstChunksY; j < lastChunksY; j++) {
-                for (Entity entity : chunks[i][j]) {
-                    if (!(entity instanceof Block)) {
-                        if (Math.floor(entity.getX() / CHUNK_SIZE) == i && Math.floor(entity.getY() / CHUNK_SIZE) == j) {
-                            updateGravity(entity, seconds);
-                            applyVelocity(entity, seconds);
-                            count++;
-                        }
-                    }
-
-                }
+                entities.addAll(chunks[i][j]);
             }
-            if (count > 1) {
-                System.out.println(count); // TODO quando si passano i chunk viene chiiamato 2 volte updateGravity e applyVelocity
+        }
+        for (Entity entity : entities) {
+            if (!(entity instanceof Block)) {
+                updateGravity(entity, seconds);
+                applyVelocity(entity, seconds);
             }
         }
 
@@ -117,11 +111,15 @@ public class Physics {
         }
 
         List<Entity> entities = new ArrayList<>(ents);
+        for (Entity entity : entities) {
+            entity.setOnGround(false);
+        }
         for (int k = 0; k < entities.size(); k++) {
             Entity entity1 = entities.get(k);
             for (int l = k; l < entities.size(); l++) {
                 Entity entity2 = entities.get(l);
                 if (entity1.isCollidable() && entity2.isCollidable()) {
+
                     double left1 = entity1.getX();
                     double right1 = entity1.getX() + entity1.getWidth();
                     double top1 = entity1.getY();
@@ -143,7 +141,6 @@ public class Physics {
                                 entity1.setVelocityX(0);
                                 entity2.setVelocityX(0);
                             }
-                            shiftX *= 1.01;
                             if (left1 < left2) {
                                 entity1.setX(entity1.getX() - shiftX);
                                 entity2.setX(entity2.getX() + shiftX);
@@ -155,10 +152,17 @@ public class Physics {
                             double shiftY = overlapY / 2;
                             if (entity1 instanceof Block || entity2 instanceof Block) {
                                 shiftY = overlapY;
+                                if (entity1 instanceof Player){
+                                    ((Player) entity1).setOnSingleJump(true);
+                                }
+                                entity1.setOnGround(true);
                                 entity1.setVelocityY(0);
+                                if (entity2 instanceof Player){
+                                    ((Player) entity2).setOnSingleJump(true);
+                                }
+                                entity2.setOnGround(true);
                                 entity2.setVelocityY(0);
                             }
-                            shiftY *= 1.01;
                             if (top1 < top2) {
                                 entity1.setY(entity1.getY() - shiftY);
                                 entity2.setY(entity2.getY() + shiftY);

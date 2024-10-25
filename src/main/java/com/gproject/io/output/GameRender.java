@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import static com.gproject.game.Physics.Costants.*;
+import static com.gproject.game.Costants.*;
 import static com.gproject.io.output.Render.renderImage;
 import static com.gproject.io.output.Render.renderText;
 import static org.lwjgl.opengl.GL11.glColor4f;
