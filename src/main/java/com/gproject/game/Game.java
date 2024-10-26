@@ -7,6 +7,7 @@ import com.gproject.io.input.KeyState;
 
 import java.util.*;
 
+import static com.gproject.game.Costants.P_MAX_HEALTH;
 import static com.gproject.main.GameSyncronizer.menu;
 
 public class Game {
@@ -16,7 +17,7 @@ public class Game {
 
     public Game() {
         camera = new Camera(0, 0, 0.5);
-        player = new Player(550, 500, 20, 40, true, true, 500, 0, 2500, 1500, 1000, 1000);
+        player = new Player(550, 500, P_MAX_HEALTH);
         chunks = new HashSet[100][100];
         for (int i = 0; i < chunks.length; i++) {
             for (int j = 0; j < chunks[0].length; j++) {
@@ -32,7 +33,6 @@ public class Game {
     public void update(Map<String, Object> inputs, double seconds) {
         seconds = Math.min(seconds, 0.0334);
         camera.update(player, seconds);
-        System.out.println(player);
         if (inputs.get("KB_ESC") == KeyState.JUST_PRESSED) {
             menu();
         }
@@ -43,7 +43,11 @@ public class Game {
             camera.deZoom();
         }
         if (inputs.get("KB_SPACE") == KeyState.JUST_PRESSED) {
-            camera.deZoom();
+            if ((inputs.get("KB_D") == KeyState.JUST_PRESSED || inputs.get("KB_D") == KeyState.HELD) && !(inputs.get("KB_A") == KeyState.JUST_PRESSED || inputs.get("KB_A") == KeyState.HELD)) {
+                player.dash(1);
+            } else if (!(inputs.get("KB_D") == KeyState.JUST_PRESSED || inputs.get("KB_D") == KeyState.HELD) && (inputs.get("KB_A") == KeyState.JUST_PRESSED || inputs.get("KB_A") == KeyState.HELD)) {
+                player.dash(-1);
+            }
         }
         if (inputs.get("KB_W") == KeyState.JUST_PRESSED) {
             player.jump();

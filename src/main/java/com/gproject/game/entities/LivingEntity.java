@@ -1,12 +1,21 @@
 package com.gproject.game.entities;
 
 public class LivingEntity extends Entity {
-    protected int health, maxHealth;
-    protected int acceleration, jumpSpeed;
+
+    // Health attributes
+    protected int health;
+    protected int maxHealth;
+
+    // Movement attributes
+    protected int acceleration;
+    protected int jumpSpeed;
+
+    // Status attribute
     protected boolean enemy;
 
-    public LivingEntity(double x, double y, int width, int height, boolean affectedByGravity, boolean collidable, int velocityLimit, int frictionLimit, int health, int maxHealth, int acceleration, int jumpSpeed, boolean enemy) {
-        super(x, y, width, height, affectedByGravity, collidable, velocityLimit, frictionLimit);
+    // Constructor
+    public LivingEntity(double x, double y, int width, int height, boolean affectedByGravity, boolean collidable, int velocityLimit, int friction, int airFriction, int health, int maxHealth, int acceleration, int jumpSpeed, boolean enemy) {
+        super(x, y, width, height, affectedByGravity, collidable, velocityLimit, friction, airFriction);
         this.health = health;
         this.maxHealth = maxHealth;
         this.acceleration = acceleration;
@@ -14,19 +23,21 @@ public class LivingEntity extends Entity {
         this.enemy = enemy;
     }
 
+    // Movement methods
     public void goRight(double seconds) {
-        this.velocityX += acceleration * seconds;
+        double netAcceleration = acceleration + (isOnGround() ? friction : airFriction);
+        this.velocityX += netAcceleration * seconds;
     }
 
     public void goLeft(double seconds) {
-        this.velocityX -= acceleration * seconds;
+        double netAcceleration = acceleration + (isOnGround() ? friction : airFriction);
+        this.velocityX -= netAcceleration * seconds;
     }
 
-    public boolean jump() {
-        if (onGround) {
+    public void jump() {
+        if (isOnGround()) {
             this.velocityY = -jumpSpeed;
-            return true;
+            lastOnGround = 1;
         }
-        return false;
     }
 }

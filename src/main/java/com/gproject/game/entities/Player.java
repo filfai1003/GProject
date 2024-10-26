@@ -1,27 +1,74 @@
 package com.gproject.game.entities;
 
+import static com.gproject.game.Costants.*;
+
 public class Player extends LivingEntity {
-    // TODO 5
-    private boolean onSingleJump = true;
 
-    public Player(double x, double y, int width, int height, boolean affectedByGravity, boolean collidable, int velocityLimit, int friction, int health, int maxHealth, int acceleration, int jumpSpeed) {
-        super(x, y, width, height, affectedByGravity, collidable, velocityLimit, friction, health, maxHealth, acceleration, jumpSpeed, false);
+    // Player-specific attributes
+    public boolean onSingleJump = true;
+    private double lastDash = 0;
+
+    // Constructor
+    public Player(double x, double y, int health) {
+        super(x, y, P_WIDTH, P_HEIGHT, true, true, P_VELOCITY_LIMIT, P_FRICTION, P_AIR_FRICTION, health, P_MAX_HEALTH, P_ACCELERATION, P_JUMP_SPEED, false);
     }
 
+    // Update method
     @Override
-    public boolean jump() {
-        if (!super.jump()) {
-            if (onSingleJump) {
-                this.velocityY = -this.jumpSpeed;
-                onSingleJump = false;
-                return true;
-            }
-            return false;
-        }
-        return true;
+    public void update(double seconds) {
+        super.update(seconds);
+        lastDash += seconds;
     }
 
-    public void setOnSingleJump(boolean onSingleJump) {
-        this.onSingleJump = onSingleJump;
+    // Velocity application with dash mechanic
+    @Override
+    public void applyVelocity(double seconds) {
+        if (lastDash < P_DASH_TIME) {
+            velocityLimit *= 2;
+        }
+
+        if (Math.abs(velocityX) > velocityLimit) {
+            velocityX = (velocityX > 0) ? velocityLimit : -velocityLimit;
+        }
+        if (Math.abs(velocityY) > velocityLimit) {
+            velocityY = (velocityY > 0) ? velocityLimit : -velocityLimit;
+        }
+
+        x += velocityX * seconds;
+        y += velocityY * seconds;
+
+        if (lastDash < P_DASH_TIME) {
+            velocityLimit /= 2;
+        }
+    }
+
+    // Jump method with double jump mechanic
+    @Override
+    public void jump() {
+        if (isOnGround()) {
+            this.velocityY = -jumpSpeed;
+            lastOnGround = 1;
+            return;
+        }
+        if (onSingleJump) {
+            this.velocityY = -this.jumpSpeed;
+            onSingleJump = false;
+        }
+    }
+
+    // Dash method
+    public boolean dash(int direction) {
+        if (lastDash > P_DASH_RELOAD_TIME) {
+            velocityX = direction * P_DASH_SPEED;
+            lastDash = 0;
+            return true;
+        }
+        return false;
+    }
+
+    // Override for ground check with coyote time
+    @Override
+    public boolean isOnGround() {
+        return lastOnGround < P_COYOTE_TIME;
     }
 }

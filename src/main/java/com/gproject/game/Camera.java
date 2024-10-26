@@ -8,26 +8,32 @@ import static com.gproject.menu.Settings.cameraSpeed;
 import static com.gproject.menu.Settings.getCameraSpeed;
 
 public class Camera {
+
+    // Camera position and zoom level
     private double x, y;
     private double zoom;
 
+    // Constructor
     public Camera(double x, double y, double zoom) {
         this.x = x;
         this.y = y;
         this.zoom = zoom;
     }
 
+    // Update camera position to follow the player with smooth interpolation
     public void update(Player player, double seconds) {
         int[] w = new int[1];
         int[] h = new int[1];
         GLFW.glfwGetWindowSize(window, w, h);
-        int xObjective = (int) (player.getX() + player.getWidth() - w[0]/2); // TODO
-        int yObjective = (int) (player.getY() + player.getHeight() - h[0]/2); // TODO
-        xObjective = (int) (xObjective + w[0]/2*(1-1/zoom));
-        yObjective = (int) (yObjective + h[0]/2*(1-1/zoom));
+
+        int xObjective = (int) (player.x + player.getWidth() / 2 - w[0] / 2);
+        int yObjective = (int) (player.y + player.getHeight() / 2 - h[0] / 2);
+
+        xObjective = (int) (xObjective + w[0] / 2 * (1 - 1 / zoom));
+        yObjective = (int) (yObjective + h[0] / 2 * (1 - 1 / zoom));
 
         double lerpFactor = Math.min(1.0, seconds * getCameraSpeed());
-        if (cameraSpeed == 20){
+        if (cameraSpeed == 20) {
             lerpFactor = 1;
         }
 
@@ -35,18 +41,22 @@ public class Camera {
         this.y += (yObjective - this.y) * lerpFactor;
     }
 
+    // Adapts an object's position and size based on the camera's position and zoom level
     public int[] adapt(int x, int y, int width, int height) {
-        int nWidth = (int) (width*zoom);
-        int nHeight = (int) (height*zoom);
+        int nWidth = (int) (width * zoom);
+        int nHeight = (int) (height * zoom);
         int nX = (int) ((x - this.x) * zoom);
         int nY = (int) ((y - this.y) * zoom);
         return new int[] {nX, nY, nWidth, nHeight};
     }
 
-    public void zoom(){
-        zoom *= 1.25;
+    // Zoom in
+    public void zoom() {
+        zoom *= Math.sqrt(2);
     }
-    public void deZoom(){
-        zoom /= 1.25;
+
+    // Zoom out
+    public void deZoom() {
+        zoom /= Math.sqrt(2);
     }
 }

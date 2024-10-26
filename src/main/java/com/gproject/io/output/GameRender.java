@@ -25,12 +25,11 @@ public class GameRender {
         Player player = game.getPlayer();
         HashSet<Entity>[][] chunks = game.getChunks();
         Camera camera = game.getCamera();
-        //boolean[][] blocks = game.getBlocks();
 
-        int firstChunksX = (int) Math.floor(player.getX() / CHUNK_SIZE) - CHUNKS_TO_RENDER;
-        int firstChunksY = (int) Math.floor(player.getY() / CHUNK_SIZE) - CHUNKS_TO_RENDER;
-        int lastChunksX = (int) Math.floor(player.getX() / CHUNK_SIZE) + CHUNKS_TO_RENDER + 1;
-        int lastChunksY = (int) Math.floor(player.getY() / CHUNK_SIZE) + CHUNKS_TO_RENDER + 1;
+        int firstChunksX = (int) Math.floor(player.x / CHUNK_SIZE) - CHUNKS_TO_RENDER;
+        int firstChunksY = (int) Math.floor(player.y / CHUNK_SIZE) - CHUNKS_TO_RENDER;
+        int lastChunksX = (int) Math.floor(player.x / CHUNK_SIZE) + CHUNKS_TO_RENDER + 1;
+        int lastChunksY = (int) Math.floor(player.y / CHUNK_SIZE) + CHUNKS_TO_RENDER + 1;
 
         firstChunksX = Math.max(0, firstChunksX);
         firstChunksY = Math.max(0, firstChunksY);
@@ -49,7 +48,7 @@ public class GameRender {
 
                 List<Entity> entities = new ArrayList<>(chunks[i][j]);
                 for (Entity entity : entities) {
-                    int[] imageParameter = camera.adapt((int) entity.getX(), (int) entity.getY(), entity.getWidth(), entity.getHeight());
+                    int[] imageParameter = camera.adapt((int) entity.x, (int) entity.y, entity.getWidth(), entity.getHeight());
                     renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], "assets/colors/red.png");
                 }
             }

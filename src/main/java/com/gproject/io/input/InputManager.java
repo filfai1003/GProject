@@ -24,7 +24,7 @@ public class InputManager {
     private static final int KEY_LEFT = GLFW.GLFW_KEY_LEFT;
     private static final int KEY_RIGHT = GLFW.GLFW_KEY_RIGHT;
 
-    private static final int KEY_SPACE = GLFW.GLFW_KEY_ENTER;
+    private static final int KEY_SPACE = GLFW.GLFW_KEY_SPACE;
     private static final int KEY_ENTER = GLFW.GLFW_KEY_ENTER;
     private static final int KEY_ESCAPE = GLFW.GLFW_KEY_ESCAPE;
 

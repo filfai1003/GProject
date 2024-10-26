@@ -13,10 +13,10 @@ import static com.gproject.game.Costants.*;
 public class Physics {
 
     public static void update(Player player, HashSet<Entity>[][] chunks, double seconds) {
-        int firstChunksX = (int) Math.floor(player.getX() / CHUNK_SIZE) - CHUNKS_TO_UPDATE;
-        int firstChunksY = (int) Math.floor(player.getY() / CHUNK_SIZE) - CHUNKS_TO_UPDATE;
-        int lastChunksX = (int) Math.floor(player.getX() / CHUNK_SIZE) + CHUNKS_TO_UPDATE + 1;
-        int lastChunksY = (int) Math.floor(player.getY() / CHUNK_SIZE) + CHUNKS_TO_UPDATE + 1;
+        int firstChunksX = (int) Math.floor(player.x / CHUNK_SIZE) - CHUNKS_TO_UPDATE;
+        int firstChunksY = (int) Math.floor(player.y / CHUNK_SIZE) - CHUNKS_TO_UPDATE;
+        int lastChunksX = (int) Math.floor(player.x / CHUNK_SIZE) + CHUNKS_TO_UPDATE + 1;
+        int lastChunksY = (int) Math.floor(player.y / CHUNK_SIZE) + CHUNKS_TO_UPDATE + 1;
 
         firstChunksX = Math.max(0, firstChunksX);
         firstChunksY = Math.max(0, firstChunksY);
@@ -39,8 +39,8 @@ public class Physics {
         }
         for (Entity entity : entities) {
             if (!(entity instanceof Block)) {
-                updateGravity(entity, seconds);
-                applyVelocity(entity, seconds);
+                entity.update(seconds);
+                entity.applyVelocity(seconds);
             }
         }
 
@@ -57,12 +57,12 @@ public class Physics {
     private static void manageChangeOfChunk(HashSet<Entity>[][] chunks, int i, int j) {
         List<Entity> entities = new ArrayList<>(chunks[i][j]);
         for (Entity entity : entities) {
-            if (entity.getX() > i * CHUNK_SIZE + CHUNK_SIZE || entity.getX() + entity.getWidth() < i * CHUNK_SIZE || entity.getY() > j * CHUNK_SIZE + CHUNK_SIZE || entity.getY() + entity.getHeight() < j * CHUNK_SIZE) {
+            if (entity.x > i * CHUNK_SIZE + CHUNK_SIZE || entity.x + entity.getWidth() < i * CHUNK_SIZE || entity.y > j * CHUNK_SIZE + CHUNK_SIZE || entity.y + entity.getHeight() < j * CHUNK_SIZE) {
                 chunks[i][j].remove(entity);
-                int startI = (int) (entity.getX() / CHUNK_SIZE);
-                int startJ = (int) (entity.getY() / CHUNK_SIZE);
-                int endI = (int) ((entity.getX() + entity.getWidth()) / CHUNK_SIZE);
-                int endJ = (int) ((entity.getY() + entity.getHeight()) / CHUNK_SIZE);
+                int startI = (int) (entity.x / CHUNK_SIZE);
+                int startJ = (int) (entity.y / CHUNK_SIZE);
+                int endI = (int) ((entity.x + entity.getWidth()) / CHUNK_SIZE);
+                int endJ = (int) ((entity.y + entity.getHeight()) / CHUNK_SIZE);
                 for (int l = startI - 1; l <= endI + 1; l++) {
                     for (int m = startJ - 1; m <= endJ + 1; m++) {
                         if (l >= 0 && l < chunks.length && m >= 0 && m < chunks[0].length) {
@@ -72,30 +72,6 @@ public class Physics {
                 }
             }
         }
-    }
-
-    private static void updateGravity(Entity entity, double seconds) {
-        if (entity.isAffectedByGravity()) {
-            entity.setVelocityY(entity.getVelocityY() + GRAVITY * seconds);
-        }
-    }
-
-    private static void applyVelocity(Entity entity, double seconds) {
-        double velocityX = entity.getVelocityX();
-        double velocityY = entity.getVelocityY();
-
-        if (Math.abs(velocityX) > entity.getVelocityLimit()) {
-            velocityX = (velocityX > 0) ? entity.getVelocityLimit() : -entity.getVelocityLimit();
-        }
-        if (Math.abs(velocityY) > entity.getVelocityLimit()) {
-            velocityY = (velocityY > 0) ? entity.getVelocityLimit() : -entity.getVelocityLimit();
-        }
-
-        entity.setX(entity.getX() + velocityX * seconds);
-        entity.setY(entity.getY() + velocityY * seconds);
-
-        entity.setVelocityX(velocityX);
-        entity.setVelocityY(velocityY);
     }
 
     private static void manageCollisionEntity2Entity(HashSet<Entity>[][] chunks, int i, int j) {
@@ -111,24 +87,21 @@ public class Physics {
         }
 
         List<Entity> entities = new ArrayList<>(ents);
-        for (Entity entity : entities) {
-            entity.setOnGround(false);
-        }
         for (int k = 0; k < entities.size(); k++) {
             Entity entity1 = entities.get(k);
             for (int l = k; l < entities.size(); l++) {
                 Entity entity2 = entities.get(l);
-                if (entity1.isCollidable() && entity2.isCollidable()) {
+                if (entity1.isAffectByCollision() && entity2.isAffectByCollision()) {
 
-                    double left1 = entity1.getX();
-                    double right1 = entity1.getX() + entity1.getWidth();
-                    double top1 = entity1.getY();
-                    double bottom1 = entity1.getY() + entity1.getHeight();
+                    double left1 = entity1.x;
+                    double right1 = entity1.x + entity1.getWidth();
+                    double top1 = entity1.y;
+                    double bottom1 = entity1.y + entity1.getHeight();
 
-                    double left2 = entity2.getX();
-                    double right2 = entity2.getX() + entity2.getWidth();
-                    double top2 = entity2.getY();
-                    double bottom2 = entity2.getY() + entity2.getHeight();
+                    double left2 = entity2.x;
+                    double right2 = entity2.x + entity2.getWidth();
+                    double top2 = entity2.y;
+                    double bottom2 = entity2.y + entity2.getHeight();
 
                     if (right1 > left2 && left1 < right2 && bottom1 > top2 && top1 < bottom2) {
                         double overlapX = Math.min(right1, right2) - Math.max(left1, left2);
@@ -138,39 +111,38 @@ public class Physics {
                             double shiftX = overlapX / 2;
                             if (entity1 instanceof Block || entity2 instanceof Block) {
                                 shiftX = overlapX;
-                                entity1.setVelocityX(0);
-                                entity2.setVelocityX(0);
+                                entity1.velocityX = 0;
+                                entity2.velocityX = 0;
                             }
                             if (left1 < left2) {
-                                entity1.setX(entity1.getX() - shiftX);
-                                entity2.setX(entity2.getX() + shiftX);
+                                entity1.setX(entity1.x - shiftX);
+                                entity2.setX(entity2.x + shiftX);
                             } else {
-                                entity1.setX(entity1.getX() + shiftX);
-                                entity2.setX(entity2.getX() - shiftX);
+                                entity1.setX(entity1.x + shiftX);
+                                entity2.setX(entity2.x - shiftX);
                             }
                         } else {
                             double shiftY = overlapY / 2;
                             if (entity1 instanceof Block || entity2 instanceof Block) {
                                 shiftY = overlapY;
                                 if (entity1 instanceof Player){
-                                    ((Player) entity1).setOnSingleJump(true);
+                                    ((Player) entity1).onSingleJump = true;
                                 }
-                                entity1.setOnGround(true);
-                                entity1.setVelocityY(0);
+                                entity1.lastOnGround = 0;
+                                entity1.velocityY = 0;
                                 if (entity2 instanceof Player){
-                                    ((Player) entity2).setOnSingleJump(true);
+                                    ((Player) entity2).onSingleJump = true;
                                 }
-                                entity2.setOnGround(true);
-                                entity2.setVelocityY(0);
+                                entity2.lastOnGround = 0;
+                                entity2.velocityY = 0;
                             }
                             if (top1 < top2) {
-                                entity1.setY(entity1.getY() - shiftY);
-                                entity2.setY(entity2.getY() + shiftY);
+                                entity1.setY(entity1.y - shiftY);
+                                entity2.setY(entity2.y + shiftY);
                             } else {
-                                entity1.setY(entity1.getY() + shiftY);
-                                entity2.setY(entity2.getY() - shiftY);
+                                entity1.setY(entity1.y + shiftY);
+                                entity2.setY(entity2.y - shiftY);
                             }
-
                         }
                     }
                 }

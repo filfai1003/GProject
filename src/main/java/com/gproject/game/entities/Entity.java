@@ -1,47 +1,81 @@
 package com.gproject.game.entities;
 
+import static com.gproject.game.Costants.*;
+
 public class Entity {
 
+    // Static attribute
     private static int nextId = 0;
-    protected final int id;
-    protected double x, y;
-    protected int width, height;
-    protected double velocityX, velocityY;
-    protected boolean affectedByGravity;
-    protected boolean collidable;
-    protected boolean onGround = false;
-    protected int velocityLimit, friction;
 
-    public Entity(double x, double y, int width, int height, boolean affectedByGravity, boolean collidable, int velocityLimit, int friction) {
+    // Final attribute
+    protected final int id;
+
+    // Position attributes
+    public double x, y;
+    protected int width, height;
+
+    // Velocity attributes
+    public double velocityX, velocityY;
+    protected int velocityLimit;
+
+    // Physics-related attributes
+    protected boolean affectedByGravity;
+    protected boolean affectByCollision;
+    protected int friction;
+    protected int airFriction;
+
+    // Time on ground
+    public double lastOnGround = 0;
+
+    // Constructor
+    public Entity(double x, double y, int width, int height, boolean affectedByGravity, boolean affectByCollision, int velocityLimit, int friction, int airFriction) {
         this.id = nextId++;
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.affectedByGravity = affectedByGravity;
-        this.collidable = collidable;
+        this.affectByCollision = affectByCollision;
         this.velocityLimit = velocityLimit;
         this.friction = friction;
+        this.airFriction = airFriction;
     }
 
-    public void update() {}
-
-    public double getX() {
-        return x;
+    // Update entity status
+    public void update(double seconds) {
+        lastOnGround += seconds;
+        if (isAffectedByGravity()) {
+            velocityY += GRAVITY * seconds;
+        }
+        if (isOnGround()) {
+            if (velocityX > 0) {
+                velocityX = Math.max(0, velocityX - friction * seconds);
+            } else if (velocityX < 0) {
+                velocityX = Math.min(0, velocityX + friction * seconds);
+            }
+        } else {
+            if (velocityX > 0) {
+                velocityX = Math.max(0, velocityX - airFriction * seconds);
+            } else if (velocityX < 0) {
+                velocityX = Math.min(0, velocityX + airFriction * seconds);
+            }
+        }
     }
 
-    public double getY() {
-        return y;
+    // Apply velocity changes
+    public void applyVelocity(double seconds) {
+        if (Math.abs(velocityX) > velocityLimit) {
+            velocityX = (velocityX > 0) ? velocityLimit : -velocityLimit;
+        }
+        if (Math.abs(velocityY) > velocityLimit) {
+            velocityY = (velocityY > 0) ? velocityLimit : -velocityLimit;
+        }
+
+        x += velocityX * seconds;
+        y += velocityY * seconds;
     }
 
-    public double getVelocityX() {
-        return velocityX;
-    }
-
-    public double getVelocityY() {
-        return velocityY;
-    }
-
+    // Getters and Setters
     public int getWidth() {
         return width;
     }
@@ -58,44 +92,16 @@ public class Entity {
         this.y = y;
     }
 
-    public void setVelocityX(double velocityX) {
-        this.velocityX = velocityX;
-    }
-
-    public void setVelocityY(double velocityY) {
-        this.velocityY = velocityY;
-    }
-
+    // Status checks
     public boolean isAffectedByGravity() {
         return affectedByGravity;
     }
 
-    public boolean isCollidable() {
-        return collidable;
-    }
-
-    public void setCollidable(boolean collidable) {
-        this.collidable = collidable;
-    }
-
-    public void setAffectedByGravity(boolean affectedByGravity) {
-        this.affectedByGravity = affectedByGravity;
+    public boolean isAffectByCollision() {
+        return affectByCollision;
     }
 
     public boolean isOnGround() {
-        return onGround;
-    }
-
-    public void setOnGround(boolean onGround) {
-        this.onGround = onGround;
-    }
-
-    public int getVelocityLimit() {
-        return velocityLimit;
-    }
-
-    public int getFriction() {
-        return friction;
+        return lastOnGround < G_COYOTE_TIME;
     }
 }
-
