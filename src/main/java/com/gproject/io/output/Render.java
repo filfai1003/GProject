@@ -9,9 +9,11 @@ import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.gproject.menu.Settings.hudDimension;
+
 public class Render {
 
-    private static final String DEFAULT_TEXTURE_PATH = "assets/default.png";
+    private static final String DEFAULT_TEXTURE_PATH = "assets/images/default.png";
     private static final Map<String, Integer> textureMap = new HashMap<>();
 
     public static int loadTexture(String path) {
@@ -54,28 +56,27 @@ public class Render {
     }
 
     public static void renderText(float x, float y, int size, String text, boolean center) {
-        float xOffset = x;
+        size = (int) (size * hudDimension);
 
         float totalWidth = 0;
         for (char c : text.toCharArray()) {
             if (c != ' ') {
-                String imagePath = "assets/char/" + c + ".png";
+                String imagePath = "assets/images/char/" + c + ".png";
                 int[] imageSize = getImageSize(imagePath);
                 float imageWidth = imageSize[0];
                 float imageHeight = imageSize[1];
                 float scaledWidth = size * (imageWidth / imageHeight);
                 totalWidth += scaledWidth;
             } else {
-                totalWidth += size / 2;
+                totalWidth += (float) size / 2;
             }
         }
-        if (center) {
-            xOffset = x - (totalWidth / 2);
-        }
+
+        float xOffset = center ? x - (totalWidth / 2) : x;
 
         for (char c : text.toCharArray()) {
             if (c != ' ') {
-                String imagePath = "assets/char/" + c + ".png";
+                String imagePath = "assets/images/char/" + c + ".png";
 
                 int[] imageSize = getImageSize(imagePath);
                 float imageWidth = imageSize[0];
@@ -86,7 +87,7 @@ public class Render {
 
                 xOffset += scaledWidth;
             } else {
-                xOffset += size / 2;
+                xOffset += (float) size / 2;
             }
         }
     }

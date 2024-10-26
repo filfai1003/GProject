@@ -1,6 +1,7 @@
-Camera Speed = 15
+HUD Size = 50
+Master Volume = 100
+Camera Speed = 10
 Frame Rate Max = 60
 Brightness = 5
-Show FPS = 1
-Fullscreen = 1
-FullScreen = 0
+Show FPS = 0
+Music Volume = 80

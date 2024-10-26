@@ -104,6 +104,9 @@ public class Physics {
                     double bottom2 = entity2.y + entity2.getHeight();
 
                     if (right1 > left2 && left1 < right2 && bottom1 > top2 && top1 < bottom2) {
+                        entity1.onCollision(entity2);
+                        entity2.onCollision(entity1);
+
                         double overlapX = Math.min(right1, right2) - Math.max(left1, left2);
                         double overlapY = Math.min(bottom1, bottom2) - Math.max(top1, top2);
 

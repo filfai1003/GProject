@@ -24,7 +24,7 @@ public class Player extends LivingEntity {
     @Override
     public void applyVelocity(double seconds) {
         if (lastDash < P_DASH_TIME) {
-            velocityLimit *= 2;
+            velocityLimit = P_DASH_SPEED;
         }
 
         if (Math.abs(velocityX) > velocityLimit) {
@@ -38,7 +38,7 @@ public class Player extends LivingEntity {
         y += velocityY * seconds;
 
         if (lastDash < P_DASH_TIME) {
-            velocityLimit /= 2;
+            velocityLimit = P_VELOCITY_LIMIT;
         }
     }
 

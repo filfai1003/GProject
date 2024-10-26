@@ -1,11 +1,13 @@
 package com.gproject.main;
 
 import com.gproject.game.Game;
-import com.gproject.io.input.InputManager;
+import com.gproject.io.input.Input;
 import com.gproject.io.output.GameRender;
 import com.gproject.io.output.MenuRender;
+import com.gproject.io.output.Sound;
 import com.gproject.menu.Menu;
 
+import static com.gproject.menu.Settings.frameDuration;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL11.*;
@@ -13,8 +15,6 @@ import static org.lwjgl.opengl.GL11.*;
 public class GameSyncronizer {
 
     public static long window;
-    private static boolean showFPS = false;
-    private static long frameDuration = 1_000_000_000L / 30;
     private static GameState state = GameState.MENU;
     private static Menu menu;
     private static Game game;
@@ -22,28 +22,30 @@ public class GameSyncronizer {
 
     public static void start(long w) {
         window = w;
-        InputManager inputManager = new InputManager(window);
         menu();
+        Input.initialize(window);
+        Sound.playMusic("assets/sound/base.wav");
 
         long lastFrameTime = System.nanoTime();
+
 
         while (!glfwWindowShouldClose(window) && state != GameState.EXIT) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            inputManager.update();
+            Input.update();
 
             long currentFrameTime = System.nanoTime();
             deltaTime = (currentFrameTime - lastFrameTime) / 1_000_000_000.0f;
 
             switch (state) {
                 case MENU:
-                    menu.update(inputManager.getInput());
+                    menu.update(Input.getInput());
                     MenuRender.render(menu);
                     break;
 
                 case PLAY:
                     lastFrameTime = System.nanoTime();
-                    game.update(inputManager.getInput(), deltaTime);
+                    game.update(Input.getInput(), deltaTime);
                     GameRender.render(game);
                     break;
                 case EXIT:
@@ -88,20 +90,6 @@ public class GameSyncronizer {
         return 0;
     }
 
-    public static boolean getShowFPS() {
-        return showFPS;
-    }
 
-    public static void setMaxFrameRate(int maxFramerate) {
-        frameDuration = 1_000_000_000L / maxFramerate;
-    }
-
-    public static void setShowFPS(int sFPS) {
-        if (sFPS == 0) {
-            showFPS = false;
-        } else if (sFPS == 1) {
-            showFPS = true;
-        }
-    }
 
 }

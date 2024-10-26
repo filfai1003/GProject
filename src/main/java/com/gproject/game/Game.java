@@ -58,9 +58,6 @@ public class Game {
         if (inputs.get("KB_A") == KeyState.JUST_PRESSED || inputs.get("KB_A") == KeyState.HELD) {
             player.goLeft(seconds);
         }
-        // TODO 5 manage input
-        // TODO 5 manage entities
-        // TODO 5 manage player
         Physics.update(player, chunks, seconds);
     }
 

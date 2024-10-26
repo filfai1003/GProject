@@ -5,7 +5,7 @@ import com.gproject.menu.MenuNode;
 import org.lwjgl.glfw.GLFW;
 
 import static com.gproject.main.GameSyncronizer.window;
-import static org.lwjgl.opengl.GL11.glOrtho;
+import static com.gproject.menu.Settings.hudDimension;
 
 public class MenuRender {
 
@@ -22,15 +22,15 @@ public class MenuRender {
         for (int i = 0; i < currentNode.getChildren().size(); i++) {
             MenuNode childNode = currentNode.getChildren().get(i);
 
-            offset += 80;
+            offset += (int) (80 * hudDimension);
             if (i == selectedIndex) {
-                Render.renderText(w[0]/2, offset, 60, "-" + childNode.getTitle() + "-", true);
+                Render.renderText((float) w[0] /2, offset, 60, "-" + childNode.getTitle() + "-", true);
                 if (childNode.isAdjustable()){
-                    offset += 60;
-                    Render.renderText(w[0]/2, offset, 50, String.valueOf(childNode.getCurrentValue()), true);
+                    offset += (int) (60 * hudDimension);
+                    Render.renderText((float) w[0] /2, offset, 50, String.valueOf(childNode.getCurrentValue()), true);
                 }
             } else {
-                Render.renderText(w[0]/2, offset, 50, childNode.getTitle(), true);
+                Render.renderText((float) w[0] /2, offset, 50, childNode.getTitle(), true);
             }
         }
     }

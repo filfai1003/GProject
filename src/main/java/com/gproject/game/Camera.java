@@ -5,13 +5,12 @@ import org.lwjgl.glfw.GLFW;
 
 import static com.gproject.main.GameSyncronizer.window;
 import static com.gproject.menu.Settings.cameraSpeed;
-import static com.gproject.menu.Settings.getCameraSpeed;
 
 public class Camera {
 
     // Camera position and zoom level
-    private double x, y;
-    private double zoom;
+    protected double x, y;
+    protected double zoom;
 
     // Constructor
     public Camera(double x, double y, double zoom) {
@@ -32,7 +31,7 @@ public class Camera {
         xObjective = (int) (xObjective + w[0] / 2 * (1 - 1 / zoom));
         yObjective = (int) (yObjective + h[0] / 2 * (1 - 1 / zoom));
 
-        double lerpFactor = Math.min(1.0, seconds * getCameraSpeed());
+        double lerpFactor = Math.min(1.0, seconds * cameraSpeed);
         if (cameraSpeed == 20) {
             lerpFactor = 1;
         }
@@ -58,5 +57,9 @@ public class Camera {
     // Zoom out
     public void deZoom() {
         zoom /= Math.sqrt(2);
+    }
+
+    public double getZoom() {
+        return zoom;
     }
 }

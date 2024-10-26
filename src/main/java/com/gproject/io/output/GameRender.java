@@ -5,6 +5,7 @@ import com.gproject.game.Game;
 import com.gproject.game.entities.Entity;
 import com.gproject.game.entities.Player;
 import com.gproject.main.GameSyncronizer;
+import com.gproject.menu.Settings;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,12 +14,13 @@ import java.util.List;
 import static com.gproject.game.Costants.*;
 import static com.gproject.io.output.Render.renderImage;
 import static com.gproject.io.output.Render.renderText;
+import static com.gproject.menu.Settings.showFPS;
 import static org.lwjgl.opengl.GL11.glColor4f;
 
 public class GameRender {
 
     public static void render(Game game) {
-        if (GameSyncronizer.getShowFPS()){
+        if (showFPS){
             renderText(0,0,50, String.valueOf(GameSyncronizer.getFrameRate()), false);
         }
 
@@ -42,14 +44,14 @@ public class GameRender {
                 if ((i + j) % 2 == 0) {
                     glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
                     int[] imageParameter = camera.adapt( i*CHUNK_SIZE,  j*CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE);
-                    renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], "assets/colors/red.png");
+                    renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], "assets/images/colors/red.png");
                     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
                 }
 
                 List<Entity> entities = new ArrayList<>(chunks[i][j]);
                 for (Entity entity : entities) {
                     int[] imageParameter = camera.adapt((int) entity.x, (int) entity.y, entity.getWidth(), entity.getHeight());
-                    renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], "assets/colors/red.png");
+                    renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], "assets/images/colors/red.png");
                 }
             }
         }

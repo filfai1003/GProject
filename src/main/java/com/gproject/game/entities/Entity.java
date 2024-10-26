@@ -75,6 +75,8 @@ public class Entity {
         y += velocityY * seconds;
     }
 
+    public void onCollision(Entity other) {}
+
     // Getters and Setters
     public int getWidth() {
         return width;
