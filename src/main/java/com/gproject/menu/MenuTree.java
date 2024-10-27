@@ -10,7 +10,11 @@ public class MenuTree {
         MenuNode root = new MenuNode("Main Menu");
 
         // Option to start the game
-        MenuNode startGame = new MenuNode("Start Game", () -> GameSyncronizer.play());
+        MenuNode startGame = new MenuNode("Start Game");
+        MenuNode newGame = new MenuNode("New Game", () -> GameSyncronizer.play(true));
+        MenuNode loadGame = new MenuNode("Load Game", () -> GameSyncronizer.play(false));
+        startGame.addChild(newGame);
+        startGame.addChild(loadGame);
 
         // Main settings node
         MenuNode settings = new MenuNode("Settings");
@@ -42,7 +46,7 @@ public class MenuTree {
         settings.addChild(audioSettings);
 
         // Exit option
-        MenuNode exit = new MenuNode("Exit", () -> GameSyncronizer.exit());
+        MenuNode exit = new MenuNode("Exit", GameSyncronizer::exit);
 
         // Add nodes to the main menu
         root.addChild(startGame);

@@ -1,10 +1,13 @@
 package com.gproject.io.input;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWGamepadState;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+import static com.gproject.io.input.KeyBinding.*;
+import static org.lwjgl.glfw.GLFW.*;
 
 public class Input {
 
@@ -12,49 +15,28 @@ public class Input {
     private static final Map<Integer, KeyState> keyStates = new HashMap<>();
     private static double mouseX, mouseY;
 
-    private static final int KEY_W = GLFW.GLFW_KEY_W;
-    private static final int KEY_A = GLFW.GLFW_KEY_A;
-    private static final int KEY_S = GLFW.GLFW_KEY_S;
-    private static final int KEY_D = GLFW.GLFW_KEY_D;
-    private static final int KEY_E = GLFW.GLFW_KEY_E;
-    private static final int KEY_Q = GLFW.GLFW_KEY_Q;
-
-    private static final int KEY_UP = GLFW.GLFW_KEY_UP;
-    private static final int KEY_DOWN = GLFW.GLFW_KEY_DOWN;
-    private static final int KEY_LEFT = GLFW.GLFW_KEY_LEFT;
-    private static final int KEY_RIGHT = GLFW.GLFW_KEY_RIGHT;
-
-    private static final int KEY_SPACE = GLFW.GLFW_KEY_SPACE;
-    private static final int KEY_ENTER = GLFW.GLFW_KEY_ENTER;
-    private static final int KEY_ESCAPE = GLFW.GLFW_KEY_ESCAPE;
-
-    private static final int MOUSE_BUTTON_LEFT = GLFW.GLFW_MOUSE_BUTTON_1;
-    private static final int MOUSE_BUTTON_RIGHT = GLFW.GLFW_MOUSE_BUTTON_2;
-
     public static void initialize(long windowHandle) {
         window = windowHandle;
-        initializeKeyStates();
-    }
 
-    private static void initializeKeyStates() {
-        keyStates.put(KEY_W, KeyState.RELEASED);
-        keyStates.put(KEY_A, KeyState.RELEASED);
-        keyStates.put(KEY_S, KeyState.RELEASED);
-        keyStates.put(KEY_D, KeyState.RELEASED);
-        keyStates.put(KEY_E, KeyState.RELEASED);
-        keyStates.put(KEY_Q, KeyState.RELEASED);
+        keyStates.put(GO_U, KeyState.RELEASED);
+        keyStates.put(GO_D, KeyState.RELEASED);
+        keyStates.put(GO_L, KeyState.RELEASED);
+        keyStates.put(GO_R, KeyState.RELEASED);
+        keyStates.put(JUMP, KeyState.RELEASED);
+        keyStates.put(DASH, KeyState.RELEASED);
+        keyStates.put(USE_ITEM_1, KeyState.RELEASED);
+        keyStates.put(USE_ITEM_2, KeyState.RELEASED);
 
-        keyStates.put(KEY_UP, KeyState.RELEASED);
-        keyStates.put(KEY_DOWN, KeyState.RELEASED);
-        keyStates.put(KEY_LEFT, KeyState.RELEASED);
-        keyStates.put(KEY_RIGHT, KeyState.RELEASED);
+        keyStates.put(UP, KeyState.RELEASED);
+        keyStates.put(LEFT, KeyState.RELEASED);
+        keyStates.put(DOWN, KeyState.RELEASED);
+        keyStates.put(RIGHT, KeyState.RELEASED);
+        keyStates.put(KB_ENTER, KeyState.RELEASED);
+        keyStates.put(KB_ESC, KeyState.RELEASED);
 
-        keyStates.put(KEY_SPACE, KeyState.RELEASED);
-        keyStates.put(KEY_ENTER, KeyState.RELEASED);
-        keyStates.put(KEY_ESCAPE, KeyState.RELEASED);
-
-        keyStates.put(MOUSE_BUTTON_LEFT, KeyState.RELEASED);
-        keyStates.put(MOUSE_BUTTON_RIGHT, KeyState.RELEASED);
+        keyStates.put(ATTACK_1, KeyState.RELEASED);
+        keyStates.put(ATTACK_2, KeyState.RELEASED);
+        keyStates.put(ATTACK_3, KeyState.RELEASED);
     }
 
     public static void update() {
@@ -64,11 +46,12 @@ public class Input {
             KeyState currentState = entry.getValue();
 
             boolean isPressed;
-
-            if (key == MOUSE_BUTTON_LEFT || key == MOUSE_BUTTON_RIGHT) {
+            if (key >= 0 && key <= GLFW_MOUSE_BUTTON_LAST) {
                 isPressed = GLFW.glfwGetMouseButton(window, key) == GLFW.GLFW_PRESS;
-            } else {
+            } else if (key >= GLFW.GLFW_KEY_SPACE && key <= GLFW.GLFW_KEY_LAST) {
                 isPressed = GLFW.glfwGetKey(window, key) == GLFW.GLFW_PRESS;
+            } else {
+                isPressed = isControllerButtonPressed(key) || isControllerAxisPressed(key);
             }
 
             if (isPressed) {
@@ -96,46 +79,71 @@ public class Input {
     public static Map<String, Object> getInput() {
         Map<String, Object> inputs = new HashMap<>();
 
-        // Tasti WASDEQ
-        inputs.put("KB_W", keyStates.get(KEY_W));
-        inputs.put("KB_A", keyStates.get(KEY_A));
-        inputs.put("KB_S", keyStates.get(KEY_S));
-        inputs.put("KB_D", keyStates.get(KEY_D));
-        inputs.put("KB_E", keyStates.get(KEY_E));
-        inputs.put("KB_Q", keyStates.get(KEY_Q));
+        inputs.put("GO_U", keyStates.get(GO_U));
+        inputs.put("GO_D", keyStates.get(GO_D));
+        inputs.put("GO_L", keyStates.get(GO_L));
+        inputs.put("GO_R", keyStates.get(GO_R));
+        inputs.put("JUMP", keyStates.get(JUMP));
+        inputs.put("DASH", keyStates.get(DASH));
+        inputs.put("USE_ITEM_1", keyStates.get(USE_ITEM_1));
+        inputs.put("USE_ITEM_2", keyStates.get(USE_ITEM_2));
 
-        // Tasti Freccia (UP, LEFT, DOWN, RIGHT)
-        inputs.put("KB_UP", keyStates.get(KEY_UP));
-        inputs.put("KB_LEFT", keyStates.get(KEY_LEFT));
-        inputs.put("KB_DOWN", keyStates.get(KEY_DOWN));
-        inputs.put("KB_RIGHT", keyStates.get(KEY_RIGHT));
+        inputs.put("UP", keyStates.get(UP));
+        inputs.put("LEFT", keyStates.get(LEFT));
+        inputs.put("DOWN", keyStates.get(DOWN));
+        inputs.put("RIGHT", keyStates.get(RIGHT));
+        inputs.put("ENTER", keyStates.get(KB_ENTER));
+        inputs.put("ESC", keyStates.get(KB_ESC));
 
-        // Altri tasti
-        inputs.put("KB_SPACE", keyStates.get(KEY_SPACE));
-        inputs.put("KB_ENTER", keyStates.get(KEY_ENTER));
-        inputs.put("KB_ESC", keyStates.get(KEY_ESCAPE));
+        inputs.put("ATTACK_1", keyStates.get(ATTACK_1));
+        inputs.put("ATTACK_2", keyStates.get(ATTACK_2));
+        inputs.put("ATTACK_3", keyStates.get(ATTACK_3));
 
-        // Tasti del mouse
-        inputs.put("MOUSE_LEFT", keyStates.get(MOUSE_BUTTON_LEFT));
-        inputs.put("MOUSE_RIGHT", keyStates.get(MOUSE_BUTTON_RIGHT));
-
-        // Posizione del mouse
         inputs.put("MOUSE_X", mouseX);
         inputs.put("MOUSE_Y", mouseY);
 
         return inputs;
     }
 
-    private static KeyState mergeKeyStates(KeyState keyState1, KeyState keyState2) {
-        if (keyState1 == KeyState.JUST_PRESSED || keyState2 == KeyState.JUST_PRESSED) {
-            return KeyState.JUST_PRESSED;
+    private static boolean isControllerButtonPressed(int key) {
+        if (!GLFW.glfwJoystickPresent(GLFW.GLFW_JOYSTICK_1)) {
+            return false;
         }
-        if (keyState1 == KeyState.HELD || keyState2 == KeyState.HELD) {
-            return KeyState.HELD;
+        GLFWGamepadState state = GLFWGamepadState.create();
+        if (GLFW.glfwGetGamepadState(GLFW.GLFW_JOYSTICK_1, state)) {
+            if (key >= GLFW.GLFW_GAMEPAD_BUTTON_A && key <= GLFW.GLFW_GAMEPAD_BUTTON_LAST) {
+                return state.buttons(key) == GLFW.GLFW_PRESS;
+            }
         }
-        if (keyState1 == KeyState.JUST_RELEASED || keyState2 == KeyState.JUST_RELEASED) {
-            return KeyState.JUST_RELEASED;
+        return false;
+    }
+
+    private static boolean isControllerAxisPressed(int key) {
+        if (!GLFW.glfwJoystickPresent(GLFW.GLFW_JOYSTICK_1)) {
+            return false;
         }
-        return KeyState.RELEASED;
+
+        GLFWGamepadState state = GLFWGamepadState.create();
+        if (GLFW.glfwGetGamepadState(GLFW.GLFW_JOYSTICK_1, state)) {
+            final float AXIS_THRESHOLD = 0.3f; // TODO aggiungere impostazioni per gestire controller
+
+            return switch (key) {
+                case GLFW.GLFW_GAMEPAD_AXIS_LEFT_X ->
+                        Math.abs(state.axes(GLFW.GLFW_GAMEPAD_AXIS_LEFT_X)) > AXIS_THRESHOLD;
+                case GLFW.GLFW_GAMEPAD_AXIS_LEFT_Y ->
+                        Math.abs(state.axes(GLFW.GLFW_GAMEPAD_AXIS_LEFT_Y)) > AXIS_THRESHOLD;
+                case GLFW.GLFW_GAMEPAD_AXIS_RIGHT_X ->
+                        Math.abs(state.axes(GLFW.GLFW_GAMEPAD_AXIS_RIGHT_X)) > AXIS_THRESHOLD;
+                case GLFW.GLFW_GAMEPAD_AXIS_RIGHT_Y ->
+                        Math.abs(state.axes(GLFW.GLFW_GAMEPAD_AXIS_RIGHT_Y)) > AXIS_THRESHOLD;
+                case GLFW.GLFW_GAMEPAD_AXIS_LEFT_TRIGGER ->
+                        state.axes(GLFW.GLFW_GAMEPAD_AXIS_LEFT_TRIGGER) > AXIS_THRESHOLD;
+                case GLFW.GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER ->
+                        state.axes(GLFW.GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER) > AXIS_THRESHOLD;
+                default -> false;
+            };
+        }
+
+        return false;
     }
 }

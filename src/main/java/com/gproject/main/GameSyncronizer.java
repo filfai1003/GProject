@@ -57,9 +57,7 @@ public class GameSyncronizer {
             if (timeToSleep > 0) {
                 try {
                     Thread.sleep(timeToSleep / 1_000_000L);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                } catch (InterruptedException ignored) {}
             }
         }
     }
@@ -71,10 +69,8 @@ public class GameSyncronizer {
         state = GameState.MENU;
     }
 
-    public static void play() {
-        if (game == null) {
-            game = new Game();
-        }
+    public static void play(boolean newGame) {
+        game = new Game(newGame);
         state = GameState.PLAY;
     }
 

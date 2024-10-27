@@ -53,6 +53,4 @@ public class Settings {
         effectAudioLevel = level / 100;
         setEffectsVolume();
     }
-
-    // TODO key bindings
 }

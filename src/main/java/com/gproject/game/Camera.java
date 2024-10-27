@@ -3,10 +3,15 @@ package com.gproject.game;
 import com.gproject.game.entities.Player;
 import org.lwjgl.glfw.GLFW;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 import static com.gproject.main.GameSyncronizer.window;
 import static com.gproject.menu.Settings.cameraSpeed;
 
-public class Camera {
+public class Camera implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     // Camera position and zoom level
     protected double x, y;
@@ -25,11 +30,11 @@ public class Camera {
         int[] h = new int[1];
         GLFW.glfwGetWindowSize(window, w, h);
 
-        int xObjective = (int) (player.x + player.getWidth() / 2 - w[0] / 2);
-        int yObjective = (int) (player.y + player.getHeight() / 2 - h[0] / 2);
+        int xObjective = (int) (player.x + (double) player.getWidth() / 2 - (double) w[0] / 2);
+        int yObjective = (int) (player.y + (double) player.getHeight() / 2 - (double) h[0] / 2);
 
-        xObjective = (int) (xObjective + w[0] / 2 * (1 - 1 / zoom));
-        yObjective = (int) (yObjective + h[0] / 2 * (1 - 1 / zoom));
+        xObjective = (int) (xObjective + (double) w[0] / 2 * (1 - 1 / zoom));
+        yObjective = (int) (yObjective + (double) h[0] / 2 * (1 - 1 / zoom));
 
         double lerpFactor = Math.min(1.0, seconds * cameraSpeed);
         if (cameraSpeed == 20) {
@@ -57,9 +62,5 @@ public class Camera {
     // Zoom out
     public void deZoom() {
         zoom /= Math.sqrt(2);
-    }
-
-    public double getZoom() {
-        return zoom;
     }
 }

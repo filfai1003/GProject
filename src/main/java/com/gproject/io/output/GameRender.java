@@ -5,7 +5,6 @@ import com.gproject.game.Game;
 import com.gproject.game.entities.Entity;
 import com.gproject.game.entities.Player;
 import com.gproject.main.GameSyncronizer;
-import com.gproject.menu.Settings;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -56,5 +55,4 @@ public class GameRender {
             }
         }
     }
-    // TODO 8 Gestisci animazioni e assets corretti
 }

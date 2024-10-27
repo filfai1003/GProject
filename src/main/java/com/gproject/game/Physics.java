@@ -57,16 +57,20 @@ public class Physics {
     private static void manageChangeOfChunk(HashSet<Entity>[][] chunks, int i, int j) {
         List<Entity> entities = new ArrayList<>(chunks[i][j]);
         for (Entity entity : entities) {
-            if (entity.x > i * CHUNK_SIZE + CHUNK_SIZE || entity.x + entity.getWidth() < i * CHUNK_SIZE || entity.y > j * CHUNK_SIZE + CHUNK_SIZE || entity.y + entity.getHeight() < j * CHUNK_SIZE) {
+            if (entity.isToRemove()) {
                 chunks[i][j].remove(entity);
-                int startI = (int) (entity.x / CHUNK_SIZE);
-                int startJ = (int) (entity.y / CHUNK_SIZE);
-                int endI = (int) ((entity.x + entity.getWidth()) / CHUNK_SIZE);
-                int endJ = (int) ((entity.y + entity.getHeight()) / CHUNK_SIZE);
-                for (int l = startI - 1; l <= endI + 1; l++) {
-                    for (int m = startJ - 1; m <= endJ + 1; m++) {
-                        if (l >= 0 && l < chunks.length && m >= 0 && m < chunks[0].length) {
-                            chunks[l][m].add(entity);
+            } else {
+                int startI = (int) (entity.x / CHUNK_SIZE)-1;
+                int startJ = (int) (entity.y / CHUNK_SIZE)-1;
+                int endI = (int) ((entity.x + entity.getWidth()) / CHUNK_SIZE)+1;
+                int endJ = (int) ((entity.y + entity.getHeight()) / CHUNK_SIZE)+1;
+                if (i < startI || i > endI || j < startJ || j > endJ) {
+                    chunks[i][j].remove(entity);
+                    for (int l = startI; l <= endI; l++) {
+                        for (int m = startJ; m <= endJ; m++) {
+                            if (l >= 0 && l < chunks.length && m >= 0 && m < chunks[0].length) {
+                                chunks[l][m].add(entity);
+                            }
                         }
                     }
                 }
@@ -128,12 +132,12 @@ public class Physics {
                             double shiftY = overlapY / 2;
                             if (entity1 instanceof Block || entity2 instanceof Block) {
                                 shiftY = overlapY;
-                                if (entity1 instanceof Player){
+                                if (entity1 instanceof Player) {
                                     ((Player) entity1).onSingleJump = true;
                                 }
                                 entity1.lastOnGround = 0;
                                 entity1.velocityY = 0;
-                                if (entity2 instanceof Player){
+                                if (entity2 instanceof Player) {
                                     ((Player) entity2).onSingleJump = true;
                                 }
                                 entity2.lastOnGround = 0;

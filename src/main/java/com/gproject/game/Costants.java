@@ -2,10 +2,11 @@ package com.gproject.game;
 
 public class Costants {
     // PLAYER
-    public static final int P_VELOCITY_LIMIT = 1200;    // Limite di velocità massimo per evitare movimenti troppo rapidi e poco controllabili.
+    public static final int P_VELOCITY_LIMIT_X = 1200;    // Limite di velocità massimo per evitare movimenti troppo rapidi e poco controllabili.
+    public static final int P_VELOCITY_LIMIT_Y = 3500;
     public static final int P_ACCELERATION = 2000;      // Accelera rapidamente, ma non troppo per mantenere il controllo sul personaggio.
-    public static final int P_FRICTION = 1500;          // Frizione elevata per fermare velocemente il giocatore sul suolo.
-    public static final int P_AIR_FRICTION = 200;       // Bassa frizione in aria per mantenere un po' d'inerzia nel movimento.
+    public static final int P_FRICTION = 2000;          // Frizione elevata per fermare velocemente il giocatore sul suolo.
+    public static final int P_AIR_FRICTION = 1000;       // Bassa frizione in aria per mantenere un po' d'inerzia nel movimento.
 
     public static final int P_WIDTH = 50;               // Larghezza del personaggio
     public static final int P_HEIGHT = 180;             // Altezza del personaggio
@@ -27,6 +28,6 @@ public class Costants {
 
     // STRUCTURAL
     public static final int CHUNK_SIZE = 1000;
-    public static final int CHUNKS_TO_UPDATE = 1;
-    public static final int CHUNKS_TO_RENDER = 1;
+    public static final int CHUNKS_TO_UPDATE = 2;
+    public static final int CHUNKS_TO_RENDER = 2;
 }

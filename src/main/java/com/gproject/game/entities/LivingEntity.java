@@ -14,8 +14,10 @@ public class LivingEntity extends Entity {
     protected boolean enemy;
 
     // Constructor
-    public LivingEntity(double x, double y, int width, int height, boolean affectedByGravity, boolean collidable, int velocityLimit, int friction, int airFriction, int health, int maxHealth, int acceleration, int jumpSpeed, boolean enemy) {
-        super(x, y, width, height, affectedByGravity, collidable, velocityLimit, friction, airFriction);
+
+
+    public LivingEntity(double x, double y, int width, int height, boolean affectedByGravity, boolean affectByCollision, int velocityLimitX, int velocityLimitY, int friction, int airFriction, int health, int maxHealth, int acceleration, int jumpSpeed, boolean enemy) {
+        super(x, y, width, height, affectedByGravity, affectByCollision, velocityLimitX, velocityLimitY, friction, airFriction);
         this.health = health;
         this.maxHealth = maxHealth;
         this.acceleration = acceleration;

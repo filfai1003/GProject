@@ -15,25 +15,25 @@ public class Menu {
 
     public void update(Map<String, Object> inputs){
 
-        if (inputs.get("KB_UP") == KeyState.JUST_PRESSED) {
+        if (inputs.get("UP") == KeyState.JUST_PRESSED) {
             selectedIndex = Math.max(0, selectedIndex-1);
         }
-        if (inputs.get("KB_DOWN") == KeyState.JUST_PRESSED) {
+        if (inputs.get("DOWN") == KeyState.JUST_PRESSED) {
             selectedIndex = Math.min(selectedIndex+1, currentNode.getChildren().size()-1);
         }
 
-        if (inputs.get("KB_LEFT") == KeyState.JUST_PRESSED) {
+        if (inputs.get("LEFT") == KeyState.JUST_PRESSED) {
             if (currentNode.getChildren().get(selectedIndex).isAdjustable()){
                 currentNode.getChildren().get(selectedIndex).decrementValue();
             }
         }
-        if (inputs.get("KB_RIGHT") == KeyState.JUST_PRESSED) {
+        if (inputs.get("RIGHT") == KeyState.JUST_PRESSED) {
             if (currentNode.getChildren().get(selectedIndex).isAdjustable()){
                 currentNode.getChildren().get(selectedIndex).incrementValue();
             }
         }
 
-        if (inputs.get("KB_ENTER") == KeyState.JUST_PRESSED) {
+        if (inputs.get("ENTER") == KeyState.JUST_PRESSED) {
             if (currentNode.getChildren().get(selectedIndex).isRunnable()){
                 currentNode.getChildren().get(selectedIndex).executeAction();
             } else if (!currentNode.getChildren().get(selectedIndex).getChildren().isEmpty()){
@@ -42,9 +42,11 @@ public class Menu {
             }
         }
 
-        if (inputs.get("KB_ESC") == KeyState.JUST_PRESSED) {
+        if (inputs.get("ESC") == KeyState.JUST_PRESSED) {
             if (currentNode.getParent() != null){
+                MenuNode last = currentNode;
                 currentNode = currentNode.getParent();
+                selectedIndex = currentNode.getChildren().indexOf(last);
             }
         }
     }

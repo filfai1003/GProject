@@ -1,14 +1,13 @@
 package com.gproject.game.entities;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 import static com.gproject.game.Costants.*;
 
-public class Entity {
-
-    // Static attribute
-    private static int nextId = 0;
-
-    // Final attribute
-    protected final int id;
+public class Entity implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     // Position attributes
     public double x, y;
@@ -16,7 +15,7 @@ public class Entity {
 
     // Velocity attributes
     public double velocityX, velocityY;
-    protected int velocityLimit;
+    protected int velocityLimitX, velocityLimitY;
 
     // Physics-related attributes
     protected boolean affectedByGravity;
@@ -27,16 +26,18 @@ public class Entity {
     // Time on ground
     public double lastOnGround = 0;
 
+    protected boolean toRemove;
+
     // Constructor
-    public Entity(double x, double y, int width, int height, boolean affectedByGravity, boolean affectByCollision, int velocityLimit, int friction, int airFriction) {
-        this.id = nextId++;
+    public Entity(double x, double y, int width, int height, boolean affectedByGravity, boolean affectByCollision, int velocityLimitX, int velocityLimitY, int friction, int airFriction) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.affectedByGravity = affectedByGravity;
         this.affectByCollision = affectByCollision;
-        this.velocityLimit = velocityLimit;
+        this.velocityLimitX = velocityLimitX;
+        this.velocityLimitY = velocityLimitY;
         this.friction = friction;
         this.airFriction = airFriction;
     }
@@ -64,11 +65,11 @@ public class Entity {
 
     // Apply velocity changes
     public void applyVelocity(double seconds) {
-        if (Math.abs(velocityX) > velocityLimit) {
-            velocityX = (velocityX > 0) ? velocityLimit : -velocityLimit;
+        if (Math.abs(velocityX) > velocityLimitX) {
+            velocityX = (velocityX > 0) ? velocityLimitX : -velocityLimitX;
         }
-        if (Math.abs(velocityY) > velocityLimit) {
-            velocityY = (velocityY > 0) ? velocityLimit : -velocityLimit;
+        if (Math.abs(velocityY) > velocityLimitY) {
+            velocityY = (velocityY > 0) ? velocityLimitY : -velocityLimitY;
         }
 
         x += velocityX * seconds;
@@ -105,5 +106,9 @@ public class Entity {
 
     public boolean isOnGround() {
         return lastOnGround < G_COYOTE_TIME;
+    }
+
+    public boolean isToRemove() {
+        return toRemove;
     }
 }

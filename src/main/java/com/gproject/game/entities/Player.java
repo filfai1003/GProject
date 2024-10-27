@@ -6,11 +6,12 @@ public class Player extends LivingEntity {
 
     // Player-specific attributes
     public boolean onSingleJump = true;
-    private double lastDash = 0;
+    private double lastDash = P_DASH_RELOAD_TIME;
+    private int direction = 1;
 
     // Constructor
     public Player(double x, double y, int health) {
-        super(x, y, P_WIDTH, P_HEIGHT, true, true, P_VELOCITY_LIMIT, P_FRICTION, P_AIR_FRICTION, health, P_MAX_HEALTH, P_ACCELERATION, P_JUMP_SPEED, false);
+        super(x, y, P_WIDTH, P_HEIGHT, true, true, P_VELOCITY_LIMIT_X, P_VELOCITY_LIMIT_Y, P_FRICTION, P_AIR_FRICTION, health, P_MAX_HEALTH, P_ACCELERATION, P_JUMP_SPEED, false);
     }
 
     // Update method
@@ -24,22 +25,24 @@ public class Player extends LivingEntity {
     @Override
     public void applyVelocity(double seconds) {
         if (lastDash < P_DASH_TIME) {
-            velocityLimit = P_DASH_SPEED;
+            velocityLimitX = P_DASH_SPEED;
         }
-
-        if (Math.abs(velocityX) > velocityLimit) {
-            velocityX = (velocityX > 0) ? velocityLimit : -velocityLimit;
-        }
-        if (Math.abs(velocityY) > velocityLimit) {
-            velocityY = (velocityY > 0) ? velocityLimit : -velocityLimit;
-        }
-
-        x += velocityX * seconds;
-        y += velocityY * seconds;
-
+        super.applyVelocity(seconds);
         if (lastDash < P_DASH_TIME) {
-            velocityLimit = P_VELOCITY_LIMIT;
+            velocityLimitX = P_VELOCITY_LIMIT_X;
         }
+    }
+
+    @Override
+    public void goLeft(double seconds) {
+        super.goLeft(seconds);
+        direction = -1;
+    }
+
+    @Override
+    public void goRight(double seconds) {
+        super.goRight(seconds);
+        direction = 1;
     }
 
     // Jump method with double jump mechanic
@@ -50,20 +53,18 @@ public class Player extends LivingEntity {
             lastOnGround = 1;
             return;
         }
-        if (onSingleJump) {
+        //if (onSingleJump) { TODO
             this.velocityY = -this.jumpSpeed;
             onSingleJump = false;
-        }
+        //}
     }
 
     // Dash method
-    public boolean dash(int direction) {
+    public void dash() {
         if (lastDash > P_DASH_RELOAD_TIME) {
             velocityX = direction * P_DASH_SPEED;
             lastDash = 0;
-            return true;
         }
-        return false;
     }
 
     // Override for ground check with coyote time
