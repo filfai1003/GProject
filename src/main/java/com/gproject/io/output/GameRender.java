@@ -4,7 +4,7 @@ import com.gproject.game.Camera;
 import com.gproject.game.Game;
 import com.gproject.game.entities.Entity;
 import com.gproject.game.entities.Player;
-import com.gproject.main.GameSyncronizer;
+import com.gproject.main.GameSync;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,7 +20,7 @@ public class GameRender {
 
     public static void render(Game game) {
         if (showFPS){
-            renderText(0,0,50, String.valueOf(GameSyncronizer.getFrameRate()), false);
+            renderText(0,0,50, String.valueOf(GameSync.getFrameRate()), false);
         }
 
         Player player = game.getPlayer();
@@ -49,8 +49,9 @@ public class GameRender {
 
                 List<Entity> entities = new ArrayList<>(chunks[i][j]);
                 for (Entity entity : entities) {
-                    int[] imageParameter = camera.adapt((int) entity.x, (int) entity.y, entity.getWidth(), entity.getHeight());
+                    int[] imageParameter = camera.adapt((int) entity.x, (int) entity.y, (int) entity.width, (int) entity.height);
                     renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], "assets/images/colors/red.png");
+                    renderText(imageParameter[0], imageParameter[1], 20, entity.toString(), true);
                 }
             }
         }

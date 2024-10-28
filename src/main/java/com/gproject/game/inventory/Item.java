@@ -2,9 +2,14 @@ package com.gproject.game.inventory;
 
 import com.gproject.game.Game;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.function.Consumer;
 
-public class Item {
+public class Item implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private int quantity;
     private final Consumer<Game> effect;
 

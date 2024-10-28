@@ -6,7 +6,7 @@ import org.lwjgl.glfw.GLFW;
 import java.io.Serial;
 import java.io.Serializable;
 
-import static com.gproject.main.GameSyncronizer.window;
+import static com.gproject.main.GameSync.window;
 import static com.gproject.menu.Settings.cameraSpeed;
 
 public class Camera implements Serializable {
@@ -30,8 +30,8 @@ public class Camera implements Serializable {
         int[] h = new int[1];
         GLFW.glfwGetWindowSize(window, w, h);
 
-        int xObjective = (int) (player.x + (double) player.getWidth() / 2 - (double) w[0] / 2);
-        int yObjective = (int) (player.y + (double) player.getHeight() / 2 - (double) h[0] / 2);
+        int xObjective = (int) (player.x + (double) player.width / 2 - (double) w[0] / 2);
+        int yObjective = (int) (player.y + (double) player.height / 2 - (double) h[0] / 2);
 
         xObjective = (int) (xObjective + (double) w[0] / 2 * (1 - 1 / zoom));
         yObjective = (int) (yObjective + (double) h[0] / 2 * (1 - 1 / zoom));

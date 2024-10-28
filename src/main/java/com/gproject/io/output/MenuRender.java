@@ -4,7 +4,7 @@ import com.gproject.menu.Menu;
 import com.gproject.menu.MenuNode;
 import org.lwjgl.glfw.GLFW;
 
-import static com.gproject.main.GameSyncronizer.window;
+import static com.gproject.main.GameSync.window;
 import static com.gproject.menu.Settings.hudDimension;
 
 public class MenuRender {

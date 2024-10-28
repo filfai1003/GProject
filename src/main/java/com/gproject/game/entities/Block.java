@@ -7,10 +7,4 @@ public class Block extends Entity {
 
     @Override
     public void update(double seconds) {}
-
-    @Override
-    public void setX(double x) {}
-
-    @Override
-    public void setY(double y) {}
 }

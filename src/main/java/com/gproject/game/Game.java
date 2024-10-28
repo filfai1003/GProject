@@ -1,17 +1,15 @@
 package com.gproject.game;
 
-import com.gproject.game.entities.Block;
 import com.gproject.game.entities.Entity;
 import com.gproject.game.entities.Player;
+import com.gproject.game.entities.PlayerDirection;
 import com.gproject.game.inventory.Inventory;
 import com.gproject.io.input.KeyState;
 
 import java.io.*;
 import java.util.*;
 
-import static com.gproject.game.Costants.CHUNK_SIZE;
-import static com.gproject.game.Costants.P_MAX_HEALTH;
-import static com.gproject.main.GameSyncronizer.menu;
+import static com.gproject.main.GameSync.menu;
 
 public class Game {
     private Camera camera;
@@ -19,48 +17,23 @@ public class Game {
     private Inventory inventory;
     private HashSet<Entity>[][] chunks;
 
+    public Game(Camera camera, Player player, Inventory inventory, HashSet<Entity>[][] chunks) {
+        this.camera = camera;
+        this.player = player;
+        this.inventory = inventory;
+        this.chunks = chunks;
+    }
+
     public Game(boolean newGame) {
         chunks = new HashSet[100][100];
         if (newGame) {
-            newGame();
+            Game g = NewGame.initialize();
+            this.player = g.player;
+            this.inventory = g.inventory;
+            this.chunks = g.chunks;
+            this.camera = g.camera;
         } else {
             loadGame();
-        }
-    }
-
-    private void newGame() {
-        camera = new Camera(0, 0, 0.5);
-        player = new Player(100, 100, P_MAX_HEALTH);
-        inventory = null; // TODO
-
-        // Initialize chunks
-        for (int i = 0; i < chunks.length; i++) {
-            for (int j = 0; j < chunks[0].length; j++) {
-                chunks[i][j] = new HashSet<>();
-            }
-        }
-
-        // Add initial entities
-        List<Entity> entities = new ArrayList<>();
-        entities.add(player);
-        entities.add(new Block(0, 0, 10000, 100));
-        entities.add(new Block(0, 10000, 10000, 100));
-        entities.add(new Block(0, 0, 100, 10000));
-        entities.add(new Block(10000, 0, 100, 10000));
-
-        // Populate chunks with entities
-        for (Entity entity : entities) {
-            int startI = (int) (entity.x / CHUNK_SIZE) - 1;
-            int startJ = (int) (entity.y / CHUNK_SIZE) - 1;
-            int endI = (int) ((entity.x + entity.getWidth()) / CHUNK_SIZE) + 1;
-            int endJ = (int) ((entity.y + entity.getHeight()) / CHUNK_SIZE) + 1;
-            for (int l = startI; l <= endI; l++) {
-                for (int m = startJ; m <= endJ; m++) {
-                    if (l >= 0 && l < chunks.length && m >= 0 && m < chunks[0].length) {
-                        chunks[l][m].add(entity);
-                    }
-                }
-            }
         }
     }
 
@@ -73,7 +46,11 @@ public class Game {
             System.out.println("Game loaded successfully.");
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Failed to load game: " + e.getMessage());
-            newGame();
+            Game g = NewGame.initialize();
+            this.player = g.player;
+            this.inventory = g.inventory;
+            this.chunks = g.chunks;
+            this.camera = g.camera;
         }
     }
 
@@ -92,6 +69,7 @@ public class Game {
     public void update(Map<String, Object> inputs, double seconds) {
         seconds = Math.min(seconds, 0.0334);
         camera.update(player, seconds);
+        inventory.update(seconds);
 
         if (inputs.get("ESC") == KeyState.JUST_PRESSED) {
             saveGame();
@@ -109,24 +87,33 @@ public class Game {
         if (inputs.get("JUMP") == KeyState.JUST_PRESSED) {
             player.jump();
         }
-        if (inputs.get("GO_R") == KeyState.JUST_PRESSED || inputs.get("GO_R") == KeyState.HELD) {
+        if ((inputs.get("GO_R") == KeyState.JUST_PRESSED || inputs.get("GO_R") == KeyState.HELD) && !(inputs.get("GO_L") == KeyState.JUST_PRESSED || inputs.get("GO_L") == KeyState.HELD)) {
             player.goRight(seconds);
         }
-        if (inputs.get("GO_L") == KeyState.JUST_PRESSED || inputs.get("GO_L") == KeyState.HELD) {
+        if ((inputs.get("GO_L") == KeyState.JUST_PRESSED || inputs.get("GO_L") == KeyState.HELD) && !(inputs.get("GO_R") == KeyState.JUST_PRESSED || inputs.get("GO_R") == KeyState.HELD)) {
             player.goLeft(seconds);
         }
+        if ((inputs.get("GO_U") == KeyState.JUST_PRESSED || inputs.get("GO_U") == KeyState.HELD) && !(inputs.get("GO_D") == KeyState.JUST_PRESSED || inputs.get("GO_D") == KeyState.HELD)) {
+            player.direction = PlayerDirection.UP;
+        }
+        if ((inputs.get("GO_D") == KeyState.JUST_PRESSED || inputs.get("GO_D") == KeyState.HELD) && !(inputs.get("GO_U") == KeyState.JUST_PRESSED || inputs.get("GO_U") == KeyState.HELD)) {
+            player.direction = PlayerDirection.DOWN;
+        }
+        if (inputs.get("ATTACK_1") == KeyState.JUST_PRESSED) {
+            inventory.mainWeapon.use(this);
+        }
 
-        // TODO manage inventory
+        if (inputs.get("GO_R") == KeyState.JUST_PRESSED || inputs.get("GO_L") == KeyState.JUST_PRESSED) {
+            System.out.println(player.velocityX);
+        }
+
 
         /* TODO prossima sessione:
-        *   Crea l'inizializazione di un arma base e di un arma speciale tipo rampino/jetpack per gestire colpi e effetti
+        *   Crea l'inizializazione di un arma speciale tipo rampino/jetpack per gestire colpi e effetti
         *   Crea oggetti per verificare effetti e altro
-        *   Quindi anche gestione input per inventario, armi e oggetti
-        *   Aggiungi anche la direzione in cui sta guardando il giocatore per determinare la direzione del colpo/attacco
-        *   Ricorda mi mettere un oggetto spada che permetta di ricaricare il double jump in caso di colpo in aria
         * */
 
-        Physics.update(player, chunks, seconds);
+        PhysicsAndLogic.update(player, chunks, seconds);
     }
 
     public Player getPlayer() {

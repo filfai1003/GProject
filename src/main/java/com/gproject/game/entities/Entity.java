@@ -5,23 +5,23 @@ import java.io.Serializable;
 
 import static com.gproject.game.Costants.*;
 
-public class Entity implements Serializable {
+public abstract class Entity implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     // Position attributes
     public double x, y;
-    protected int width, height;
+    public double width, height;
 
     // Velocity attributes
     public double velocityX, velocityY;
-    protected int velocityLimitX, velocityLimitY;
+    protected double velocityLimitX, velocityLimitY;
 
     // Physics-related attributes
     protected boolean affectedByGravity;
     protected boolean affectByCollision;
-    protected int friction;
-    protected int airFriction;
+    protected double friction;
+    protected double airFriction;
 
     // Time on ground
     public double lastOnGround = 0;
@@ -65,35 +65,18 @@ public class Entity implements Serializable {
 
     // Apply velocity changes
     public void applyVelocity(double seconds) {
-        if (Math.abs(velocityX) > velocityLimitX) {
-            velocityX = (velocityX > 0) ? velocityLimitX : -velocityLimitX;
-        }
-        if (Math.abs(velocityY) > velocityLimitY) {
-            velocityY = (velocityY > 0) ? velocityLimitY : -velocityLimitY;
-        }
+       if (Math.abs(velocityX) > velocityLimitX) {
+           velocityX = (velocityX > 0) ? velocityLimitX : -velocityLimitX;
+       }
+       if (Math.abs(velocityY) > velocityLimitY) {
+           velocityY = (velocityY > 0) ? velocityLimitY : -velocityLimitY;
+       }
 
         x += velocityX * seconds;
         y += velocityY * seconds;
     }
 
     public void onCollision(Entity other) {}
-
-    // Getters and Setters
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public void setY(double y) {
-        this.y = y;
-    }
 
     // Status checks
     public boolean isAffectedByGravity() {
@@ -110,5 +93,15 @@ public class Entity implements Serializable {
 
     public boolean isToRemove() {
         return toRemove;
+    }
+
+    @Override
+    public String toString() {
+        return "Entity{" +
+                "x=" + (int) x +
+                ", y=" + (int) y +
+                ", velocityX=" + (int) velocityX +
+                ", velocityY=" + (int) velocityY +
+                '}';
     }
 }

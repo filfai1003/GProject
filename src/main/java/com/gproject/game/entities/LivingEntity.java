@@ -7,8 +7,8 @@ public class LivingEntity extends Entity {
     protected int maxHealth;
 
     // Movement attributes
-    protected int acceleration;
-    protected int jumpSpeed;
+    protected double acceleration;
+    public int jumpSpeed;
 
     // Status attribute
     protected boolean enemy;

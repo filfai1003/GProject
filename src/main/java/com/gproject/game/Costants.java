@@ -21,12 +21,19 @@ public class Costants {
 
     // GENERAL
     public static final double G_COYOTE_TIME = 0.15;    // Coyote time global
+    public static final int G_VELOCITY_LIMIT_X = 1200;    // Limite di velocità massimo per evitare movimenti troppo rapidi e poco controllabili.
+    public static final int G_VELOCITY_LIMIT_Y = 3500;
+    public static final int G_ACCELERATION = 2000;      // Accelera rapidamente, ma non troppo per mantenere il controllo sul personaggio.
+    public static final int G_FRICTION = 2000;          // Frizione elevata per fermare velocemente il giocatore sul suolo.
+    public static final int G_AIR_FRICTION = 1000;
 
     // PHYSICS
     public static final int GRAVITY = 4000;             // Gravità abbassata per salti più fluidi.
 
 
     // STRUCTURAL
+    public static final int CHUNK_NX = 100;
+    public static final int CHUNK_NY = 100;
     public static final int CHUNK_SIZE = 1000;
     public static final int CHUNKS_TO_UPDATE = 2;
     public static final int CHUNKS_TO_RENDER = 2;

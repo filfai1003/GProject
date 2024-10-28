@@ -67,7 +67,7 @@ public class Initializer {
     public static void main(String[] args) {
         Initializer initializer = new Initializer();
         initializer.init();
-        GameSyncronizer.start(initializer.window);
+        GameSync.start(initializer.window);
         initializer.cleanup();
     }
 }

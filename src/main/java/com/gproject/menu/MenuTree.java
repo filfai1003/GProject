@@ -1,6 +1,6 @@
 package com.gproject.menu;
 
-import com.gproject.main.GameSyncronizer;
+import com.gproject.main.GameSync;
 
 import java.util.Map;
 
@@ -11,8 +11,8 @@ public class MenuTree {
 
         // Option to start the game
         MenuNode startGame = new MenuNode("Start Game");
-        MenuNode newGame = new MenuNode("New Game", () -> GameSyncronizer.play(true));
-        MenuNode loadGame = new MenuNode("Load Game", () -> GameSyncronizer.play(false));
+        MenuNode newGame = new MenuNode("New Game", () -> GameSync.play(true));
+        MenuNode loadGame = new MenuNode("Load Game", () -> GameSync.play(false));
         startGame.addChild(newGame);
         startGame.addChild(loadGame);
 
@@ -46,7 +46,7 @@ public class MenuTree {
         settings.addChild(audioSettings);
 
         // Exit option
-        MenuNode exit = new MenuNode("Exit", GameSyncronizer::exit);
+        MenuNode exit = new MenuNode("Exit", GameSync::exit);
 
         // Add nodes to the main menu
         root.addChild(startGame);

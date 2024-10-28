@@ -1,13 +1,16 @@
 package com.gproject.game.entities;
 
 import static com.gproject.game.Costants.*;
+import static com.gproject.game.entities.PlayerDirection.LEFT;
+import static com.gproject.game.entities.PlayerDirection.RIGHT;
 
 public class Player extends LivingEntity {
 
     // Player-specific attributes
     public boolean onSingleJump = true;
     private double lastDash = P_DASH_RELOAD_TIME;
-    private int direction = 1;
+    public PlayerDirection direction = RIGHT;
+    public int d = 1;
 
     // Constructor
     public Player(double x, double y, int health) {
@@ -36,13 +39,15 @@ public class Player extends LivingEntity {
     @Override
     public void goLeft(double seconds) {
         super.goLeft(seconds);
-        direction = -1;
+        direction = LEFT;
+        d = -1;
     }
 
     @Override
     public void goRight(double seconds) {
         super.goRight(seconds);
-        direction = 1;
+        direction = RIGHT;
+        d = 1;
     }
 
     // Jump method with double jump mechanic
@@ -53,16 +58,16 @@ public class Player extends LivingEntity {
             lastOnGround = 1;
             return;
         }
-        //if (onSingleJump) { TODO
+        if (onSingleJump) {
             this.velocityY = -this.jumpSpeed;
             onSingleJump = false;
-        //}
+        }
     }
 
     // Dash method
     public void dash() {
         if (lastDash > P_DASH_RELOAD_TIME) {
-            velocityX = direction * P_DASH_SPEED;
+            velocityX = d * P_DASH_SPEED;
             lastDash = 0;
         }
     }
@@ -71,5 +76,15 @@ public class Player extends LivingEntity {
     @Override
     public boolean isOnGround() {
         return lastOnGround < P_COYOTE_TIME;
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "x=" + (int) x +
+                ", y=" + (int) y +
+                ", velocityX=" + (int) velocityX +
+                ", velocityY=" + (int) velocityY +
+                '}';
     }
 }

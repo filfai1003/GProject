@@ -12,7 +12,7 @@ import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL11.*;
 
-public class GameSyncronizer {
+public class GameSync {
 
     public static long window;
     private static GameState state = GameState.MENU;
