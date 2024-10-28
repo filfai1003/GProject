@@ -67,7 +67,7 @@ public class Game {
     }
 
     public void update(Map<String, Object> inputs, double seconds) {
-        seconds = Math.min(seconds, 0.0334);
+        seconds = Math.min(seconds, 0.03);
         camera.update(player, seconds);
         inventory.update(seconds);
 
@@ -100,13 +100,8 @@ public class Game {
             player.direction = PlayerDirection.DOWN;
         }
         if (inputs.get("ATTACK_1") == KeyState.JUST_PRESSED) {
-            inventory.mainWeapon.use(this);
+            inventory.mainWeapon.baseAttack(this);
         }
-
-        if (inputs.get("GO_R") == KeyState.JUST_PRESSED || inputs.get("GO_L") == KeyState.JUST_PRESSED) {
-            System.out.println(player.velocityX);
-        }
-
 
         /* TODO prossima sessione:
         *   Crea l'inizializazione di un arma speciale tipo rampino/jetpack per gestire colpi e effetti
@@ -126,5 +121,9 @@ public class Game {
 
     public Camera getCamera() {
         return camera;
+    }
+
+    public Inventory getInventory() {
+        return inventory;
     }
 }

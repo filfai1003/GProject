@@ -14,6 +14,8 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class GameSync {
 
+    // TODO per migliorare le prestazioni e la gestione delle collisioni prova a runnare il gioco e il render separatamente, il gioco su cpu unicamente e il render unicamente su gpu
+
     public static long window;
     private static GameState state = GameState.MENU;
     private static Menu menu;

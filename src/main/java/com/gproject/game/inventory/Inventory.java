@@ -10,7 +10,7 @@ public class Inventory implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public Weapon mainWeapon, secondWeapon;
-    private Item item1, item2;
+    public Item item1, item2;
     private List<Weapon> weapons;
 
     public Inventory() {
@@ -19,7 +19,7 @@ public class Inventory implements Serializable {
 
     public void update(double seconds){
         for (Weapon weapon: weapons) {
-            weapon.lastAttack += seconds;
+            weapon.passifEffect.accept(seconds);
         }
     }
 

@@ -38,6 +38,11 @@ public class PhysicsAndLogic {
         }
         for (Entity entity : entities) {
             if (!(entity instanceof Block)) {
+                if (entity instanceof LivingEntity) {
+                    if (((LivingEntity) entity).trigger != null) {
+                        ((LivingEntity) entity).trigger.accept(player, seconds);
+                    }
+                }
                 entity.update(seconds);
                 entity.applyVelocity(seconds);
             }
@@ -74,32 +79,32 @@ public class PhysicsAndLogic {
         List<Entity> entities = new ArrayList<>(ents);
         for (int k = 0; k < entities.size(); k++) {
             Entity entity1 = entities.get(k);
-            for (int l = k+1; l < entities.size(); l++) {
+            for (int l = k + 1; l < entities.size(); l++) {
                 Entity entity2 = entities.get(l);
-                if (entity1.isAffectByCollision() && entity2.isAffectByCollision()) {
 
-                    double left1 = entity1.x;
-                    double right1 = entity1.x + entity1.width;
-                    double top1 = entity1.y;
-                    double bottom1 = entity1.y + entity1.height;
+                double left1 = entity1.x;
+                double right1 = entity1.x + entity1.width;
+                double top1 = entity1.y;
+                double bottom1 = entity1.y + entity1.height;
 
-                    double left2 = entity2.x;
-                    double right2 = entity2.x + entity2.width;
+                double left2 = entity2.x;
+                double right2 = entity2.x + entity2.width;
 
-                    double top2 = entity2.y;
-                    double bottom2 = entity2.y + entity2.height;
+                double top2 = entity2.y;
+                double bottom2 = entity2.y + entity2.height;
 
-                    if (right1 > left2 && left1 < right2 && bottom1 > top2 && top1 < bottom2) {
-                        entity1.onCollision(entity2);
-                        entity2.onCollision(entity1);
+                if (right1 > left2 && left1 < right2 && bottom1 > top2 && top1 < bottom2) {
+                    entity1.onCollision(entity2);
+                    entity2.onCollision(entity1);
 
-                        if (entity1 instanceof LivingEntity && entity2 instanceof LivingEntity) {
+                    if (entity1 instanceof LivingEntity && entity2 instanceof LivingEntity) {
+                        if (entity1.isAffectByCollision() && entity2.isAffectByCollision()) {
                             resolveCollision2Entity(entity1, entity2, right1, right2, left1, left2, top1, top2, bottom1, bottom2);
-                        } else if (entity1 instanceof LivingEntity && entity2 instanceof Block) {
-                            resolveCollisionEntityBlock(entity1, right1, right2, left1, left2, top1, top2, bottom1, bottom2);
-                        } else if (entity1 instanceof Block && entity2 instanceof LivingEntity) {
-                            resolveCollisionEntityBlock(entity2, right2, right1, left2, left1, top2, top1, bottom2, bottom1);
                         }
+                    } else if (entity1 instanceof LivingEntity && entity2 instanceof Block) {
+                        resolveCollisionEntityBlock(entity1, right1, right2, left1, left2, top1, top2, bottom1, bottom2);
+                    } else if (entity1 instanceof Block && entity2 instanceof LivingEntity) {
+                        resolveCollisionEntityBlock(entity2, right2, right1, left2, left1, top2, top1, bottom2, bottom1);
                     }
                 }
             }
@@ -121,9 +126,9 @@ public class PhysicsAndLogic {
             }
 
             // Equalize the velocities in the x-direction
-            double averageVelocityX = (entity1.velocityX + entity2.velocityX) / 2;
-            entity1.velocityX = averageVelocityX;
-            entity2.velocityX = averageVelocityX;
+            double avg = (entity1.velocityX + entity2.velocityX) / 2;
+            entity1.velocityX = avg;
+            entity2.velocityX = avg;
 
         } else {
             double shiftY = overlapY / 2;
@@ -136,9 +141,9 @@ public class PhysicsAndLogic {
             }
 
             // Equalize the velocities in the y-direction
-            double tmp = entity1.velocityY;
-            entity1.velocityY = entity2.velocityY;
-            entity2.velocityY = tmp;
+            double avg = (entity1.velocityY + entity2.velocityY) / 2;
+            entity1.velocityY = avg;
+            entity2.velocityY = avg;
         }
     }
 
@@ -149,35 +154,43 @@ public class PhysicsAndLogic {
 
         if (overlapX < overlapY) {
             double shiftX = overlapX;
-            entity1.velocityX = 0; // Set horizontal velocity to 0 on collision
 
             if (left1 < left2) {
-                entity1.x -= shiftX; // Move entity1 left by the overlap amount
+                entity1.x -= shiftX;
+                if (entity1.velocityX > 0) {
+                    entity1.velocityX = 0;
+                }
             } else {
-                entity1.x += shiftX; // Move entity1 right by the overlap amount
+                entity1.x += shiftX;
+                if (entity1.velocityX < 0) {
+                    entity1.velocityX = 0;
+                }
             }
         } else {
             double shiftY = overlapY;
 
-            // If entity1 is a Player, reset jump capability
             if (entity1 instanceof Player) {
                 ((Player) entity1).onSingleJump = true;
             }
 
-            // Reset lastOnGround and vertical velocity
-            entity1.lastOnGround = 0;
-            entity1.velocityY = 0; // Set vertical velocity to 0 on collision
 
             if (top1 < top2) {
-                entity1.y -= shiftY; // Move entity1 up by the overlap amount
+                entity1.y -= shiftY;
+                entity1.lastOnGround = 0;
+                if (entity1.velocityY > 0) {
+                    entity1.velocityY = 0;
+                }
             } else {
-                entity1.y += shiftY; // Move entity1 down by the overlap amount
+                entity1.y += shiftY;
+                if (entity1.velocityY < 0) {
+                    entity1.velocityY = 0;
+                }
             }
         }
     }
 
 
-    public static void insertNewEntity(Entity entity, HashSet<Entity>[][] chunks){
+    public static void insertNewEntity(Entity entity, HashSet<Entity>[][] chunks) {
         int startI = (int) (entity.x / CHUNK_SIZE) - 1;
         int startJ = (int) (entity.y / CHUNK_SIZE) - 1;
         int endI = (int) ((entity.x + entity.width) / CHUNK_SIZE) + 1;

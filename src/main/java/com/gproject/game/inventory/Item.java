@@ -10,10 +10,12 @@ public class Item implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    public String name;
+
     private int quantity;
     private final Consumer<Game> effect;
 
-    public Item(int quantity, Consumer<Game> effect) {
+    public Item(String name, int quantity, Consumer<Game> effect) {
         this.quantity = quantity;
         this.effect = effect;
     }

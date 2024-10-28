@@ -1,7 +1,7 @@
 HUD Size = 50
 Master Volume = 100
 Camera Speed = 10
-Frame Rate Max = 240
+Frame Rate Max = 150
 Brightness = 5
 Show FPS = 1
 Music Volume = 70

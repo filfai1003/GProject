@@ -94,14 +94,4 @@ public abstract class Entity implements Serializable {
     public boolean isToRemove() {
         return toRemove;
     }
-
-    @Override
-    public String toString() {
-        return "Entity{" +
-                "x=" + (int) x +
-                ", y=" + (int) y +
-                ", velocityX=" + (int) velocityX +
-                ", velocityY=" + (int) velocityY +
-                '}';
-    }
 }

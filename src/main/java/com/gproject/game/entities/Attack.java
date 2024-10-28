@@ -43,14 +43,16 @@ public class Attack extends Entity implements Cloneable {
                 damagedEntities.add(other);
                 if (other instanceof LivingEntity) {
                     ((LivingEntity) other).health -= damage;
+                    if ((velocityLimitX == 0 && caster.x + caster.width / 2 < other.x + other.width / 2) || (x + width / 2 < other.x + other.width / 2)) {
+                        other.velocityX += knockback;
+                    } else {
+                        other.velocityX -= knockback;
+                    }
+                    other.velocityY -= knockback;
+                    if (onCollisionEffect != null) {
+                        onCollisionEffect.accept(other);
+                    }
                 }
-                if (x + width < other.x + other.width) {
-                    other.velocityX += knockback;
-                } else {
-                    other.velocityX -= knockback;
-                }
-                other.velocityY -= knockback;
-                onCollisionEffect.accept(other);
             }
         }
     }
@@ -59,10 +61,8 @@ public class Attack extends Entity implements Cloneable {
         try {
             Attack clonedAttack = (Attack) super.clone();
 
-            // Creazione di una nuova istanza per damagedEntities per evitare condivisioni non desiderate
             clonedAttack.damagedEntities = new HashSet<>(this.damagedEntities);
 
-            // Verifica e clonazione della funzione onCollisionEffect
             if (this.onCollisionEffect != null) {
                 clonedAttack.onCollisionEffect = this.onCollisionEffect;
             }

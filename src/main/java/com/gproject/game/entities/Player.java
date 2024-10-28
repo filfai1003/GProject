@@ -7,14 +7,17 @@ import static com.gproject.game.entities.PlayerDirection.RIGHT;
 public class Player extends LivingEntity {
 
     // Player-specific attributes
+    public int charge = 0;
+    public int maxCharge = P_CHARGES;
     public boolean onSingleJump = true;
     private double lastDash = P_DASH_RELOAD_TIME;
     public PlayerDirection direction = RIGHT;
     public int d = 1;
+    // TODO implementa stamina
 
     // Constructor
-    public Player(double x, double y, int health) {
-        super(x, y, P_WIDTH, P_HEIGHT, true, true, P_VELOCITY_LIMIT_X, P_VELOCITY_LIMIT_Y, P_FRICTION, P_AIR_FRICTION, health, P_MAX_HEALTH, P_ACCELERATION, P_JUMP_SPEED, false);
+    public Player(double x, double y) {
+        super(x, y, P_WIDTH, P_HEIGHT, true, true, P_VELOCITY_LIMIT_X, P_VELOCITY_LIMIT_Y, P_FRICTION, P_AIR_FRICTION, P_MAX_HEALTH, P_MAX_HEALTH, P_ACCELERATION, P_JUMP_SPEED, false, null);
     }
 
     // Update method
@@ -29,6 +32,7 @@ public class Player extends LivingEntity {
     public void applyVelocity(double seconds) {
         if (lastDash < P_DASH_TIME) {
             velocityLimitX = P_DASH_SPEED;
+            velocityY = 0;
         }
         super.applyVelocity(seconds);
         if (lastDash < P_DASH_TIME) {
@@ -72,19 +76,19 @@ public class Player extends LivingEntity {
         }
     }
 
+    public void addCharge(int charges) {
+        for (int i = 0; i < charges; i++) {
+            if (charge < maxCharge){
+                charge++;
+            } else {
+                return;
+            }
+        }
+    }
+
     // Override for ground check with coyote time
     @Override
     public boolean isOnGround() {
         return lastOnGround < P_COYOTE_TIME;
-    }
-
-    @Override
-    public String toString() {
-        return "Player{" +
-                "x=" + (int) x +
-                ", y=" + (int) y +
-                ", velocityX=" + (int) velocityX +
-                ", velocityY=" + (int) velocityY +
-                '}';
     }
 }
