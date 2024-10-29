@@ -1,4 +1,4 @@
-package com.gproject.game;
+package com.gproject.game.render;
 
 import com.gproject.game.entities.Player;
 import org.lwjgl.glfw.GLFW;

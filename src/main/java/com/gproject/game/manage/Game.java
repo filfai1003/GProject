@@ -1,5 +1,6 @@
-package com.gproject.game;
+package com.gproject.game.manage;
 
+import com.gproject.game.render.Camera;
 import com.gproject.game.entities.Entity;
 import com.gproject.game.entities.Player;
 import com.gproject.game.entities.PlayerDirection;
@@ -15,9 +16,9 @@ public class Game {
     private Camera camera;
     private Player player;
     private Inventory inventory;
-    private HashSet<Entity>[][] chunks;
+    private Chunk[][] chunks;
 
-    public Game(Camera camera, Player player, Inventory inventory, HashSet<Entity>[][] chunks) {
+    public Game(Camera camera, Player player, Inventory inventory, Chunk[][] chunks) {
         this.camera = camera;
         this.player = player;
         this.inventory = inventory;
@@ -25,7 +26,7 @@ public class Game {
     }
 
     public Game(boolean newGame) {
-        chunks = new HashSet[100][100];
+        chunks = new Chunk[100][100];
         if (newGame) {
             Game g = NewGame.initialize();
             this.player = g.player;
@@ -42,7 +43,7 @@ public class Game {
             player = (Player) ois.readObject();
             camera = (Camera) ois.readObject();
             inventory = (Inventory) ois.readObject();
-            chunks = (HashSet<Entity>[][]) ois.readObject();
+            chunks = (Chunk[][]) ois.readObject();
             System.out.println("Game loaded successfully.");
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Failed to load game: " + e.getMessage());
@@ -102,20 +103,26 @@ public class Game {
         if (inputs.get("ATTACK_1") == KeyState.JUST_PRESSED) {
             inventory.mainWeapon.baseAttack(this);
         }
+        if (inputs.get("ATTACK_2") == KeyState.JUST_PRESSED) {
+            inventory.mainWeapon.heavyAttack(this);
+        }
+        if (inputs.get("ATTACK_3") == KeyState.JUST_PRESSED) {
+            inventory.mainWeapon.specialAttack(this);
+        }
 
         /* TODO prossima sessione:
         *   Crea l'inizializazione di un arma speciale tipo rampino/jetpack per gestire colpi e effetti
         *   Crea oggetti per verificare effetti e altro
         * */
 
-        PhysicsAndLogic.update(player, chunks, seconds);
+        PhysicsAndLogic.update(seconds, this);
     }
 
     public Player getPlayer() {
         return player;
     }
 
-    public HashSet<Entity>[][] getChunks() {
+    public Chunk[][] getChunks() {
         return chunks;
     }
 

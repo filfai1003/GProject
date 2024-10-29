@@ -1,4 +1,4 @@
-package com.gproject.game;
+package com.gproject.game.manage;
 
 import com.gproject.game.entities.*;
 
@@ -6,11 +6,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import static com.gproject.game.Costants.*;
+import static com.gproject.game.manage.Costants.*;
 
 public class PhysicsAndLogic {
 
-    public static void update(Player player, HashSet<Entity>[][] chunks, double seconds) {
+    public static void update(double seconds, Game game) {
+        Player player = game.getPlayer();
+        Chunk[][] chunks = game.getChunks();
+
         int firstChunksX = (int) (player.x / CHUNK_SIZE) - CHUNKS_TO_UPDATE;
         int firstChunksY = (int) (player.y / CHUNK_SIZE) - CHUNKS_TO_UPDATE;
         int lastChunksX = (int) (player.x / CHUNK_SIZE) + CHUNKS_TO_UPDATE + 1;
@@ -21,7 +24,7 @@ public class PhysicsAndLogic {
         lastChunksX = Math.min(chunks.length, lastChunksX);
         lastChunksY = Math.min(chunks[0].length, lastChunksY);
 
-        chunks[(int) (player.x / CHUNK_SIZE)][(int) (player.y / CHUNK_SIZE)].add(player);
+        chunks[(int) (player.x / CHUNK_SIZE)][(int) (player.y / CHUNK_SIZE)].entities.add(player);
 
         // Change entity chunk
         for (int i = firstChunksX; i < lastChunksX; i++) {
@@ -33,17 +36,12 @@ public class PhysicsAndLogic {
         HashSet<Entity> entities = new HashSet<>();
         for (int i = firstChunksX; i < lastChunksX; i++) {
             for (int j = firstChunksY; j < lastChunksY; j++) {
-                entities.addAll(chunks[i][j]);
+                entities.addAll(chunks[i][j].entities);
             }
         }
         for (Entity entity : entities) {
             if (!(entity instanceof Block)) {
-                if (entity instanceof LivingEntity) {
-                    if (((LivingEntity) entity).trigger != null) {
-                        ((LivingEntity) entity).trigger.accept(player, seconds);
-                    }
-                }
-                entity.update(seconds);
+                entity.update(seconds, game);
                 entity.applyVelocity(seconds);
             }
         }
@@ -51,22 +49,22 @@ public class PhysicsAndLogic {
 
     }
 
-    private static void manageChangeOfChunk(HashSet<Entity>[][] chunks, int i, int j) {
-        List<Entity> entities = new ArrayList<>(chunks[i][j]);
+    private static void manageChangeOfChunk(Chunk[][] chunks, int i, int j) {
+        List<Entity> entities = new ArrayList<>(chunks[i][j].entities);
         for (Entity entity : entities) {
             if (entity.isToRemove()) {
-                chunks[i][j].remove(entity);
+                chunks[i][j].entities.remove(entity);
             } else {
                 int startI = (int) (entity.x / CHUNK_SIZE) - 1;
                 int startJ = (int) (entity.y / CHUNK_SIZE) - 1;
                 int endI = (int) ((entity.x + entity.width) / CHUNK_SIZE) + 1;
                 int endJ = (int) ((entity.y + entity.height) / CHUNK_SIZE) + 1;
                 if (i < startI || i > endI || j < startJ || j > endJ) {
-                    chunks[i][j].remove(entity);
+                    chunks[i][j].entities.remove(entity);
                     for (int l = startI; l <= endI; l++) {
                         for (int m = startJ; m <= endJ; m++) {
                             if (l >= 0 && l < chunks.length && m >= 0 && m < chunks[0].length) {
-                                chunks[l][m].add(entity);
+                                chunks[l][m].entities.add(entity);
                             }
                         }
                     }
@@ -190,7 +188,7 @@ public class PhysicsAndLogic {
     }
 
 
-    public static void insertNewEntity(Entity entity, HashSet<Entity>[][] chunks) {
+    public static void insertNewEntity(Entity entity, Chunk[][] chunks) {
         int startI = (int) (entity.x / CHUNK_SIZE) - 1;
         int startJ = (int) (entity.y / CHUNK_SIZE) - 1;
         int endI = (int) ((entity.x + entity.width) / CHUNK_SIZE) + 1;
@@ -198,7 +196,7 @@ public class PhysicsAndLogic {
         for (int l = startI; l <= endI; l++) {
             for (int m = startJ; m <= endJ; m++) {
                 if (l >= 0 && l < chunks.length && m >= 0 && m < chunks[0].length) {
-                    chunks[l][m].add(entity);
+                    chunks[l][m].entities.add(entity);
                 }
             }
         }

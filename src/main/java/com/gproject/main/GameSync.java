@@ -1,6 +1,6 @@
 package com.gproject.main;
 
-import com.gproject.game.Game;
+import com.gproject.game.manage.Game;
 import com.gproject.io.input.Input;
 import com.gproject.io.output.GameRender;
 import com.gproject.io.output.MenuRender;

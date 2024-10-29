@@ -1,18 +1,16 @@
 package com.gproject.io.output;
 
-import com.gproject.game.Camera;
-import com.gproject.game.Game;
+import com.gproject.game.manage.Chunk;
+import com.gproject.game.render.Camera;
+import com.gproject.game.manage.Game;
 import com.gproject.game.entities.Entity;
-import com.gproject.game.entities.LivingEntity;
 import com.gproject.game.entities.Player;
 import com.gproject.main.GameSync;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
-import static com.gproject.game.Costants.*;
+import static com.gproject.game.manage.Costants.*;
 import static com.gproject.io.output.Render.renderImage;
 import static com.gproject.io.output.Render.renderText;
 import static com.gproject.main.GameSync.window;
@@ -24,7 +22,7 @@ public class GameRender {
     public static void render(Game game) {
 
         Player player = game.getPlayer();
-        HashSet<Entity>[][] chunks = game.getChunks();
+        Chunk[][] chunks = game.getChunks();
         Camera camera = game.getCamera();
 
         int firstChunksX = (int) Math.floor(player.x / CHUNK_SIZE) - CHUNKS_TO_RENDER;
@@ -49,37 +47,48 @@ public class GameRender {
                     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
                 }
 
-                entities.addAll(chunks[i][j]);
+                entities.addAll(chunks[i][j].entities);
             }
         }
 
         for (Entity entity : entities) {
             int[] imageParameter = camera.adapt((int) entity.x, (int) entity.y, (int) entity.width, (int) entity.height);
             renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], "assets/images/colors/red.png");
-            if (entity instanceof LivingEntity) {
-                renderText(imageParameter[0], imageParameter[1], 20, entity.toString(), false);
-            }
         }
 
         int[] w = new int[1];
         int[] h = new int[1];
         GLFW.glfwGetWindowSize(window, w, h);
 
-        renderImage(20, h[0]-120, 100, 100, "assets/images/inventory/back.png");
+        renderImage(20, h[0]-120, 100, 100, "assets/images/inventory/Back.png");
         if (game.getInventory().item1 != null) {
             renderImage(40, h[0]-100, 60, 60, "assets/images/inventory/" + game.getInventory().item1.name + ".png");
         }
-        renderImage(20, h[0]-240, 100, 100, "assets/images/inventory/back.png");
+        renderImage(20, h[0]-240, 100, 100, "assets/images/inventory/Back.png");
         if (game.getInventory().item2 != null) {
             renderImage(40, h[0]-220, 60, 60, "assets/images/inventory/" + game.getInventory().item2.name + ".png");
         }
-        renderImage(140, h[0]-120, 100, 100, "assets/images/inventory/back.png");
+        renderImage(140, h[0]-120, 100, 100, "assets/images/inventory/Back.png");
         if (game.getInventory().secondWeapon != null) {
             renderImage(160, h[0]-100, 60, 60, "assets/images/inventory/" + game.getInventory().secondWeapon.name + ".png");
         }
-        renderImage(140, h[0]-240, 100, 100, "assets/images/inventory/back.png");
+        renderImage(140, h[0]-240, 100, 100, "assets/images/inventory/Back.png");
         if (game.getInventory().mainWeapon != null) {
             renderImage(160, h[0]-220, 60, 60, "assets/images/inventory/" + game.getInventory().mainWeapon.name + ".png");
+        }
+
+
+        renderImage(20, 20, 800, 20, "assets/images/colors/black.png");
+        renderImage(20, 20, (int) ((double) (player.health)/player.maxHealth*800), 20, "assets/images/colors/red.png");
+
+        renderImage(20, 50, 500, 20, "assets/images/colors/black.png");
+        renderImage(20, 50, (int) (player.vigor/player.maxVigor*500), 20, "assets/images/colors/red.png");
+
+        for (int i = 0; i < player.maxCharge; i++) {
+            renderImage(i*30 + 20, 80, 20, 20, "assets/images/colors/black.png");
+            if (i < player.charge) {
+                renderImage(i*30 + 20, 80, 20, 20, "assets/images/colors/red.png");
+            }
         }
 
         if (showFPS){

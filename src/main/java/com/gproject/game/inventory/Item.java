@@ -1,6 +1,6 @@
 package com.gproject.game.inventory;
 
-import com.gproject.game.Game;
+import com.gproject.game.manage.Game;
 
 import java.io.Serial;
 import java.io.Serializable;

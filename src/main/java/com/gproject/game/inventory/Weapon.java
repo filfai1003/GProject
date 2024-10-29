@@ -1,6 +1,7 @@
 package com.gproject.game.inventory;
 
-import com.gproject.game.Game;
+import com.gproject.game.manage.Chunk;
+import com.gproject.game.manage.Game;
 import com.gproject.game.entities.Attack;
 import com.gproject.game.entities.Entity;
 import com.gproject.game.entities.Player;
@@ -11,7 +12,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.function.Consumer;
 
-import static com.gproject.game.PhysicsAndLogic.insertNewEntity;
+import static com.gproject.game.manage.PhysicsAndLogic.insertNewEntity;
 
 public class Weapon implements Serializable {
     @Serial
@@ -23,7 +24,6 @@ public class Weapon implements Serializable {
     protected Attack heavyAttack;
     protected Attack specialAttack;
     public transient Consumer<Double> passifEffect;
-    public double timer = 0;
 
     public Weapon(String name, Attack baseAttack, Attack heavyAttack, Attack specialAttack, Consumer<Double> passifEffect) {
         this.name = name;
@@ -37,7 +37,7 @@ public class Weapon implements Serializable {
         if (baseAttack == null) {
             return;
         }
-        HashSet<Entity>[][] chunks = game.getChunks();
+        Chunk[][] chunks = game.getChunks();
         Player player = game.getPlayer();
         if (player.lastAttack > baseAttack.reloadTime){
             player.lastAttack = 0;
@@ -80,7 +80,7 @@ public class Weapon implements Serializable {
         if (heavyAttack == null) {
             return;
         }
-        HashSet<Entity>[][] chunks = game.getChunks();
+        Chunk[][] chunks = game.getChunks();
         Player player = game.getPlayer();
         if (player.lastAttack > heavyAttack.reloadTime){
             player.lastAttack = 0;
@@ -123,7 +123,7 @@ public class Weapon implements Serializable {
         if (specialAttack == null) {
             return;
         }
-        HashSet<Entity>[][] chunks = game.getChunks();
+        Chunk[][] chunks = game.getChunks();
         Player player = game.getPlayer();
         if (player.lastAttack > specialAttack.reloadTime){
             player.lastAttack = 0;
