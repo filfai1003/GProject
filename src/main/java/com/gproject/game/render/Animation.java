@@ -19,16 +19,27 @@ public class Animation {
         this.path = path;
     }
 
+    public void update(double seconds) {
+        time += seconds;
+    }
+
     public int getCurrentIndex(){
-        int ret = (int) (time/fps);
+        int ret = (int) (time*fps);
         if (ret > frames) {
             if (!endLess) {
                 toremove = true;
+                time -= (double) frames / fps;
+                ret = (int) (time*fps);
             }
             else {
                 time -= (double) frames / fps;
+                ret = (int) (time*fps);
             }
         }
         return ret;
+    }
+
+    public String getPath() {
+        return path;
     }
 }

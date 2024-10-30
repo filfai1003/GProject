@@ -3,7 +3,8 @@ package com.gproject.game.entities;
 import com.gproject.game.manage.Game;
 import com.gproject.game.render.DynamicAnimation;
 
-import java.util.HashSet;
+import java.util.HashMap;
+
 
 import static com.gproject.game.manage.Costants.*;
 import static com.gproject.game.entities.PlayerDirection.LEFT;
@@ -57,9 +58,9 @@ public class Player extends LivingEntity {
     public Player(double x, double y) {
         super(x, y, P_WIDTH, P_HEIGHT, true, true, P_SPEED_LIMIT_X, P_SPEED_LIMIT_Y,
                 P_FRICTION, P_AIR_FRICTION, P_MAX_HEALTH, P_ACCELERATION, P_JUMP_SPEED, false);
-        DynamicAnimation d = new DynamicAnimation(0, 0, width, height, 1, 10, "assets/images/player");
-        HashSet<DynamicAnimation> animations = new HashSet<>();
-        animations.add(d);
+        DynamicAnimation d = new DynamicAnimation(0, 0, width, height, 5, 7, "assets/images/player");
+        HashMap<String, DynamicAnimation> animations = new HashMap<>();
+        animations.put("", d);
         dynamicAnimations = animations;
     }
 
@@ -130,7 +131,6 @@ public class Player extends LivingEntity {
      */
     @Override
     public void jump() {
-        status = "jump";
         if (vigor > P_JUMP_VIGOR) {
             if (isOnGround()) {
                 velocityY = -jumpSpeed;
@@ -150,8 +150,8 @@ public class Player extends LivingEntity {
      * Gestisce l'abilità di Dash del giocatore.
      */
     public void dash() {
-        status = "dash";
         if (vigor > P_DASH_VIGOR && lastDash > P_DASH_RELOAD_TIME) {
+            dynamicAnimations.get("").startOverrideAnimation(P_DASH_TIME, new DynamicAnimation(0, 0, width, height, (int) (17/P_DASH_TIME), 17, "assets/images/player/dash"));
             velocityX = d * P_DASH_SPEED;
             lastDash = 0;
             vigor -= P_DASH_VIGOR;
@@ -187,5 +187,13 @@ public class Player extends LivingEntity {
 
     public int getMaxCharge() {
         return maxCharge;
+    }
+
+    @Override
+    public String getStatus() {
+        if (!isOnGround() && lastDash > P_DASH_TIME + P_COYOTE_TIME) {
+            status = "jump";
+        }
+        return super.getStatus();
     }
 }

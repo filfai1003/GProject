@@ -114,19 +114,19 @@ public class GameRender {
 
             for (Animation animation : animations) {
                 int[] imageParameter = camera.adapt((int) animation.x, (int) animation.y, (int) animation.width, (int) animation.height);
-                renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], animation.path + animation.getCurrentIndex() + "png");
+                renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], animation.getPath() + animation.getCurrentIndex() + "png");
             }
 
             for (Entity entity : entities) {
-                for (DynamicAnimation animation : entity.dynamicAnimations){
+                for (DynamicAnimation animation : entity.dynamicAnimations.values()){
                     int[] imageParameter = camera.adapt((int) (entity.x + animation.x), (int) (entity.y + animation.y), (int) animation.width, (int) animation.height);
                     if (animation.isOverriding()){
-                        renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], animation.overridePath + "/" + (((LivingEntity)entity).d == 1 ? "r" : "l") + "/" + animation.getCurrentIndex() + ".png");
+                        renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], animation.getPath() + "/" + (((LivingEntity)entity).d == 1 ? "r" : "l") + "/" + animation.getCurrentIndex() + ".png");
                     }
-                    if (entity instanceof LivingEntity) {
-                        renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], animation.path + "/" + entity.status + "/" + (((LivingEntity)entity).d == 1 ? "r" : "l") + "/" + animation.getCurrentIndex() + ".png");
+                    else if (entity instanceof LivingEntity) {
+                        renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], animation.getPath() + "/" + entity.getStatus() + "/" + (((LivingEntity)entity).d == 1 ? "r" : "l") + "/" + animation.getCurrentIndex() + ".png");
                     } else {
-                        renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], animation.path + "/" + entity.status + "/" + animation.getCurrentIndex() + ".png");
+                        renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], animation.getPath() + "/" + entity.getStatus() + "/" + animation.getCurrentIndex() + ".png");
                     }
                 }
                 entity.status = " ";

@@ -3,7 +3,6 @@ package com.gproject.game.manage;
 import com.gproject.game.entities.blocks.Block;
 import com.gproject.game.render.Camera;
 import com.gproject.game.entities.*;
-import com.gproject.game.entities.monsters.Mage;
 import com.gproject.game.inventory.Inventory;
 import com.gproject.game.inventory.Weapon;
 import com.gproject.game.inventory.waepons.Sword;
@@ -18,7 +17,7 @@ public class NewGame {
     public static Game initialize(){
         Camera camera = new Camera(0, 0, 0.5);
 
-        Player player = new Player(100, 100);
+        Player player = new Player(500, 500);
 
         Inventory inventory = new Inventory();
         Weapon sword = new Sword(player);
@@ -40,8 +39,7 @@ public class NewGame {
         entities.add(new Block(0, 5000, 5000, 100));
         entities.add(new Block(0, 0, 100, 5000));
         entities.add(new Block(5000, 0, 100, 5000));
-        entities.add(new Mage(300, 300, true));
-        entities.add(new Mage(400, 300, true));
+        //entities.add(new Mage(300, 1000, true));
 
         // Inserimento di tutte le entità nei chunk
         for (Entity entity : entities) {

@@ -13,7 +13,7 @@ import static com.gproject.main.GameSync.menu;
 
 public class Game {
 
-    public boolean debugMode = true;
+    public boolean debugMode = false;
     private Camera camera;
     private Player player;
     private Inventory inventory;

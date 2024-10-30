@@ -5,7 +5,8 @@ import com.gproject.game.render.DynamicAnimation;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.gproject.game.manage.Costants.*;
 
@@ -34,7 +35,7 @@ public abstract class Entity implements Serializable {
 
     // Gestione del tempo e delle animazioni
     public double lastOnGround = 0;
-    public HashSet<DynamicAnimation> dynamicAnimations;
+    public Map<String, DynamicAnimation> dynamicAnimations;
 
     /**
      * Costruttore principale per un'entità.
@@ -51,16 +52,16 @@ public abstract class Entity implements Serializable {
      */
     public Entity(double x, double y, int width, int height, boolean affectedByGravity, boolean affectByCollision,
                   int friction, int airFriction, boolean enemy) {
-        this(x, y, width, height, affectedByGravity, affectByCollision, friction, airFriction, enemy, new HashSet<>());
+        this(x, y, width, height, affectedByGravity, affectByCollision, friction, airFriction, enemy, new HashMap<>());
         DynamicAnimation d = new DynamicAnimation(0, 0, width, height, 1, 1, "");
-        dynamicAnimations.add(d);
+        dynamicAnimations.put("",d);
     }
 
     /**
      * Costruttore secondario per un'entità con animazioni.
      */
     public Entity(double x, double y, int width, int height, boolean affectedByGravity, boolean affectByCollision,
-                  int friction, int airFriction, boolean enemy, HashSet<DynamicAnimation> dynamicAnimations) {
+                  int friction, int airFriction, boolean enemy, Map<String, DynamicAnimation> dynamicAnimations) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -89,8 +90,8 @@ public abstract class Entity implements Serializable {
         applyFriction(seconds);
         applyVelocity(seconds);
 
-        for (DynamicAnimation dynamicAnimation : dynamicAnimations) {
-            dynamicAnimation.time += seconds;
+        for (DynamicAnimation dynamicAnimation : dynamicAnimations.values()) {
+            dynamicAnimation.update(seconds);
         }
     }
 
@@ -170,5 +171,9 @@ public abstract class Entity implements Serializable {
 
     public boolean isOnGround() {
         return lastOnGround < G_COYOTE_TIME;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }
