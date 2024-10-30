@@ -20,6 +20,7 @@ public class KeyBinding {
 
     public static int KB_ENTER = GLFW.GLFW_KEY_ENTER;
     public static int KB_ESC = GLFW.GLFW_KEY_ESCAPE;
+    public static int DEBUG_MODE = GLFW.GLFW_KEY_F3;
 
     public static int ATTACK_1 = GLFW.GLFW_MOUSE_BUTTON_1;
     public static int ATTACK_2 = GLFW.GLFW_MOUSE_BUTTON_2;

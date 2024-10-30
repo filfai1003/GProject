@@ -31,8 +31,10 @@ public class Input {
         keyStates.put(LEFT, KeyState.RELEASED);
         keyStates.put(DOWN, KeyState.RELEASED);
         keyStates.put(RIGHT, KeyState.RELEASED);
+
         keyStates.put(KB_ENTER, KeyState.RELEASED);
         keyStates.put(KB_ESC, KeyState.RELEASED);
+        keyStates.put(DEBUG_MODE, KeyState.RELEASED);
 
         keyStates.put(ATTACK_1, KeyState.RELEASED);
         keyStates.put(ATTACK_2, KeyState.RELEASED);
@@ -92,8 +94,10 @@ public class Input {
         inputs.put("LEFT", keyStates.get(LEFT));
         inputs.put("DOWN", keyStates.get(DOWN));
         inputs.put("RIGHT", keyStates.get(RIGHT));
+
         inputs.put("ENTER", keyStates.get(KB_ENTER));
         inputs.put("ESC", keyStates.get(KB_ESC));
+        inputs.put("DEBUG_MODE", keyStates.get(DEBUG_MODE));
 
         inputs.put("ATTACK_1", keyStates.get(ATTACK_1));
         inputs.put("ATTACK_2", keyStates.get(ATTACK_2));

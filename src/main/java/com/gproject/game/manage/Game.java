@@ -1,7 +1,6 @@
 package com.gproject.game.manage;
 
 import com.gproject.game.render.Camera;
-import com.gproject.game.entities.Entity;
 import com.gproject.game.entities.Player;
 import com.gproject.game.entities.PlayerDirection;
 import com.gproject.game.inventory.Inventory;
@@ -13,6 +12,8 @@ import java.util.*;
 import static com.gproject.main.GameSync.menu;
 
 public class Game {
+
+    public boolean debugMode = true;
     private Camera camera;
     private Player player;
     private Inventory inventory;
@@ -72,6 +73,9 @@ public class Game {
         camera.update(player, seconds);
         inventory.update(seconds);
 
+        if (inputs.get("DEBUG_MODE") == KeyState.JUST_PRESSED) {
+            debugMode = !debugMode;
+        }
         if (inputs.get("ESC") == KeyState.JUST_PRESSED) {
             saveGame();
             menu();
