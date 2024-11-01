@@ -13,7 +13,7 @@ import static com.gproject.main.GameSync.menu;
 
 public class Game {
 
-    public boolean debugMode = false;
+    public boolean debugMode = true;
     private Camera camera;
     private Player player;
     private Inventory inventory;
@@ -86,6 +86,12 @@ public class Game {
         if (inputs.get("DOWN") == KeyState.JUST_PRESSED) {
             camera.deZoom();
         }
+        if (inputs.get("RIGHT") == KeyState.JUST_PRESSED) {
+            inventory.changeMainWeapon();
+        }
+        if (inputs.get("LEFT") == KeyState.JUST_PRESSED) {
+            inventory.changeSecondWeapon();
+        }
         if (inputs.get("DASH") == KeyState.JUST_PRESSED) {
             player.dash();
         }
@@ -105,19 +111,25 @@ public class Game {
             player.direction = PlayerDirection.DOWN;
         }
         if (inputs.get("ATTACK_1") == KeyState.JUST_PRESSED) {
-            inventory.mainWeapon.baseAttack(this);
+            if (inventory.mainWeapon != null) {
+                inventory.mainWeapon.baseAttack(this);
+            }
         }
         if (inputs.get("ATTACK_2") == KeyState.JUST_PRESSED) {
-            inventory.mainWeapon.heavyAttack(this);
+            if (inventory.mainWeapon != null) {
+                inventory.mainWeapon.heavyAttack(this);
+            }
         }
         if (inputs.get("ATTACK_3") == KeyState.JUST_PRESSED) {
-            inventory.mainWeapon.specialAttack(this);
+            if (inventory.mainWeapon != null) {
+                inventory.mainWeapon.specialAttack(this);
+            }
         }
-
-        /* TODO prossima sessione:
-        *   Crea l'inizializazione di un arma speciale tipo rampino/jetpack per gestire colpi e effetti
-        *   Crea oggetti per verificare effetti e altro
-        * */
+        if (inputs.get("ATTACK_4") == KeyState.JUST_PRESSED) {
+            if (inventory.secondWeapon != null) {
+                inventory.secondWeapon.specialAttack(this);
+            }
+        }
 
         PhysicsAndLogic.update(seconds, this);
     }

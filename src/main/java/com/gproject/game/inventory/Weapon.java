@@ -3,13 +3,11 @@ package com.gproject.game.inventory;
 import com.gproject.game.manage.Chunk;
 import com.gproject.game.manage.Game;
 import com.gproject.game.entities.Attack;
-import com.gproject.game.entities.Entity;
 import com.gproject.game.entities.Player;
 import com.gproject.game.entities.PlayerDirection;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.function.Consumer;
 
 import static com.gproject.game.manage.PhysicsAndLogic.insertNewEntity;
@@ -49,6 +47,7 @@ public class Weapon implements Serializable {
             else if (player.direction == PlayerDirection.LEFT) {
                 attack.x = -attack.x - attack.width;
                 attack.y =  player.height /2 -  attack.height/2;
+                attack.velocityX = -attack.velocityX;
             }
             else if (player.direction == PlayerDirection.DOWN) {
                 double tmp = attack.width;

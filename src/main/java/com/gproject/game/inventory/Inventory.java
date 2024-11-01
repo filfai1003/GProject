@@ -19,8 +19,36 @@ public class Inventory implements Serializable {
 
     public void update(double seconds){
         for (Weapon weapon: weapons) {
-            weapon.passifEffect.accept(seconds);
+            if (weapon.passifEffect != null) {
+                weapon.passifEffect.accept(seconds);
+            }
         }
+    }
+
+    public void changeMainWeapon(){
+        int index = weapons.indexOf(mainWeapon);
+        index++;
+        if (index >= weapons.size()) {
+            if (index == weapons.size()) {
+                mainWeapon = null;
+                return;
+            }
+            index = 0;
+        }
+        mainWeapon = weapons.get(index);
+    }
+
+    public void changeSecondWeapon(){
+        int index = weapons.indexOf(secondWeapon);
+        index++;
+        if (index >= weapons.size()) {
+            if (index == weapons.size()) {
+                secondWeapon = null;
+                return;
+            }
+            index = 0;
+        }
+        secondWeapon = weapons.get(index);
     }
 
     public List<Weapon> getWeapons() {

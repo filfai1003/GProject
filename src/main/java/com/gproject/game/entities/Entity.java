@@ -1,12 +1,13 @@
 package com.gproject.game.entities;
 
 import com.gproject.game.manage.Game;
-import com.gproject.game.render.DynamicAnimation;
+import com.gproject.game.render.Animation;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.gproject.game.manage.Costants.*;
 
@@ -15,53 +16,27 @@ public abstract class Entity implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    // Posizione e dimensioni
     public double x, y;
     public double width, height;
-
-    // Velocità
     public double velocityX, velocityY;
 
-    // Attributi fisici
-    private final boolean affectedByGravity;
-    private final boolean affectByCollision;
-    private final double friction;
-    private final double airFriction;
+    public final boolean affectedByGravity;
+    public boolean affectByCollision;
+    public final double friction;
+    public final double airFriction;
 
-    // Stato
     public String status = " ";
-    private final boolean enemy;
-    protected boolean toRemove;
+    public String lastStatus = " ";
 
-    // Gestione del tempo e delle animazioni
+    public final Relation enemy;
+    public boolean toRemove;
+
     public double lastOnGround = 0;
-    public Map<String, DynamicAnimation> dynamicAnimations;
+    public Sequence sequence;
 
-    /**
-     * Costruttore principale per un'entità.
-     *
-     * @param x Posizione iniziale sull'asse x.
-     * @param y Posizione iniziale sull'asse y.
-     * @param width Larghezza dell'entità.
-     * @param height Altezza dell'entità.
-     * @param affectedByGravity Specifica se è influenzata dalla gravità.
-     * @param affectByCollision Specifica se è influenzata dalle collisioni.
-     * @param friction Attrito dell'entità.
-     * @param airFriction Attrito dell'entità nell'aria.
-     * @param enemy Indica se l'entità è un nemico.
-     */
-    public Entity(double x, double y, int width, int height, boolean affectedByGravity, boolean affectByCollision,
-                  int friction, int airFriction, boolean enemy) {
-        this(x, y, width, height, affectedByGravity, affectByCollision, friction, airFriction, enemy, new HashMap<>());
-        DynamicAnimation d = new DynamicAnimation(0, 0, width, height, 1, 1, "");
-        dynamicAnimations.put("",d);
-    }
+    public Map<String, Animation> animations = new HashMap<>();
 
-    /**
-     * Costruttore secondario per un'entità con animazioni.
-     */
-    public Entity(double x, double y, int width, int height, boolean affectedByGravity, boolean affectByCollision,
-                  int friction, int airFriction, boolean enemy, Map<String, DynamicAnimation> dynamicAnimations) {
+    public Entity(double x, double y, int width, int height, boolean affectedByGravity, boolean affectByCollision, int friction, int airFriction, Relation enemy) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -71,35 +46,36 @@ public abstract class Entity implements Serializable {
         this.friction = friction;
         this.airFriction = airFriction;
         this.enemy = enemy;
-        this.dynamicAnimations = dynamicAnimations;
     }
 
-    // Metodi di aggiornamento
-
-    /**
-     * Aggiorna lo stato dell'entità, applicando gravità e attrito.
-     *
-     * @param seconds Tempo trascorso dall'ultimo aggiornamento.
-     * @param game Istanza del gioco.
-     */
     public void update(double seconds, Game game) {
         lastOnGround += seconds;
         if (affectedByGravity) {
             velocityY += GRAVITY * seconds;
         }
-        applyFriction(seconds);
-        applyVelocity(seconds);
-
-        for (DynamicAnimation dynamicAnimation : dynamicAnimations.values()) {
-            dynamicAnimation.update(seconds);
+        if (sequence == null) {
+            applyFriction(seconds);
+            applyVelocity(seconds);
+        } else {
+            if (this instanceof LivingEntity) {
+                ((LivingEntity) this).lastAttack = 0;
+            }
+            sequence.update(seconds, this);
         }
+
+        if (!Objects.equals(status, lastStatus)){
+            for (Animation animation : animations.values()) {
+                animation.updateFrames();
+                animation.update(seconds);
+            }
+        } else {
+            for (Animation animation : animations.values()) {
+                animation.update(seconds);
+            }
+        }
+
     }
 
-    /**
-     * Applica l'attrito e l'attrito dell'aria in base alla condizione dell'entità.
-     *
-     * @param seconds Tempo trascorso dall'ultimo aggiornamento.
-     */
     private void applyFriction(double seconds) {
         if (isOnGround()) {
             if (velocityX > 0) {
@@ -121,11 +97,6 @@ public abstract class Entity implements Serializable {
         }
     }
 
-    /**
-     * Applica la velocità dell'entità alle sue coordinate.
-     *
-     * @param seconds Tempo trascorso dall'ultimo aggiornamento.
-     */
     public void applyVelocity(double seconds) {
         if (Math.abs(velocityX) > G_VELOCITY_LIMIT_X) {
             velocityX = (velocityX > 0) ? G_VELOCITY_LIMIT_X : -G_VELOCITY_LIMIT_X;
@@ -138,42 +109,9 @@ public abstract class Entity implements Serializable {
         y += velocityY * seconds;
     }
 
-    // Metodi di interazione
-
-    /**
-     * Definisce il comportamento su collisione con un'altra entità.
-     *
-     * @param other L'entità con cui collide.
-     */
     public void onCollision(Entity other) {}
-
-    // Getters e metodi di stato
-
-    public boolean isAffectedByCollision() {
-        return affectByCollision;
-    }
-
-    public double getFriction() {
-        return friction;
-    }
-
-    public double getAirFriction() {
-        return airFriction;
-    }
-
-    public boolean isEnemy() {
-        return enemy;
-    }
-
-    public boolean isToRemove() {
-        return toRemove;
-    }
 
     public boolean isOnGround() {
         return lastOnGround < G_COYOTE_TIME;
-    }
-
-    public String getStatus() {
-        return status;
     }
 }

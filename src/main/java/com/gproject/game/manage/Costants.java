@@ -14,6 +14,6 @@ public class Costants {
     public static final int CHUNK_NX = 100;
     public static final int CHUNK_NY = 100;
     public static final int CHUNK_SIZE = 1000;
-    public static final int CHUNKS_TO_UPDATE = 5;
-    public static final int CHUNKS_TO_RENDER = 2;
+    public static final int CHUNKS_TO_UPDATE = 10;
+    public static final int CHUNKS_TO_RENDER = 10;
 }

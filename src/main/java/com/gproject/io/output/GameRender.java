@@ -1,17 +1,19 @@
 package com.gproject.io.output;
 
-import com.gproject.game.entities.blocks.Block;
 import com.gproject.game.entities.LivingEntity;
+import com.gproject.game.entities.Relation;
+import com.gproject.game.entities.blocks.Block;
 import com.gproject.game.manage.Chunk;
 import com.gproject.game.render.Animation;
 import com.gproject.game.render.Camera;
 import com.gproject.game.manage.Game;
 import com.gproject.game.entities.Entity;
 import com.gproject.game.entities.Player;
-import com.gproject.game.render.DynamicAnimation;
 import com.gproject.main.GameSync;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import static com.gproject.game.manage.Costants.*;
@@ -62,11 +64,12 @@ public class GameRender {
 
             for (Entity entity : entities) {
                 int[] imageParameter = camera.adapt((int) entity.x, (int) entity.y, (int) entity.width, (int) entity.height);
-                if (entity instanceof Block) {
+                if (entity.enemy == Relation.BLOCK) {
                     renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], "assets/images/colors/green.png");
-                } else if (!entity.isEnemy()) {
+                } else if (entity.enemy == Relation.PLAYER || entity.enemy == Relation.FRIEND) {
                     renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], "assets/images/colors/black.png");
-                } else {
+                    renderText(imageParameter[0], imageParameter[1], 10, (int)entity.x + ", " + (int)entity.y, false);
+                } else if (entity.enemy == Relation.ENEMY) {
                     renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], "assets/images/colors/red.png");
                 }
             }
@@ -106,6 +109,7 @@ public class GameRender {
             }
         } else {
             HashSet<Animation> animations = new HashSet<>();
+
             for (int i = firstChunksX; i < lastChunksX; i++) {
                 for (int j = firstChunksY; j < lastChunksY; j++) {
                     animations.addAll(chunks[i][j].animations);
@@ -114,20 +118,13 @@ public class GameRender {
 
             for (Animation animation : animations) {
                 int[] imageParameter = camera.adapt((int) animation.x, (int) animation.y, (int) animation.width, (int) animation.height);
-                renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], animation.getPath() + animation.getCurrentIndex() + "png");
+                renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], animation.getImagePath());
             }
 
             for (Entity entity : entities) {
-                for (DynamicAnimation animation : entity.dynamicAnimations.values()){
+                for (Animation animation : entity.animations.values()){
                     int[] imageParameter = camera.adapt((int) (entity.x + animation.x), (int) (entity.y + animation.y), (int) animation.width, (int) animation.height);
-                    if (animation.isOverriding()){
-                        renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], animation.getPath() + "/" + (((LivingEntity)entity).d == 1 ? "r" : "l") + "/" + animation.getCurrentIndex() + ".png");
-                    }
-                    else if (entity instanceof LivingEntity) {
-                        renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], animation.getPath() + "/" + entity.getStatus() + "/" + (((LivingEntity)entity).d == 1 ? "r" : "l") + "/" + animation.getCurrentIndex() + ".png");
-                    } else {
-                        renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], animation.getPath() + "/" + entity.getStatus() + "/" + animation.getCurrentIndex() + ".png");
-                    }
+                    renderImage(imageParameter[0], imageParameter[1], imageParameter[2], imageParameter[3], animation.getImagePath());
                 }
                 entity.status = " ";
             }

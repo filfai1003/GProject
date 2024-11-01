@@ -52,7 +52,7 @@ public class PhysicsAndLogic {
     private static void manageChangeOfChunk(Chunk[][] chunks, int i, int j) {
         List<Entity> entities = new ArrayList<>(chunks[i][j].entities);
         for (Entity entity : entities) {
-            if (entity.isToRemove()) {
+            if (entity.toRemove) {
                 chunks[i][j].entities.remove(entity);
             } else {
                 int startI = (int) (entity.x / CHUNK_SIZE) - 1;
@@ -96,7 +96,7 @@ public class PhysicsAndLogic {
                     entity2.onCollision(entity1);
 
                     if (entity1 instanceof LivingEntity && entity2 instanceof LivingEntity) {
-                        if (entity1.isAffectedByCollision() && entity2.isAffectedByCollision()) {
+                        if (entity1.affectByCollision && entity2.affectByCollision) {
                             resolveCollision2Entity(entity1, entity2, right1, right2, left1, left2, top1, top2, bottom1, bottom2);
                         }
                     } else if (entity1 instanceof LivingEntity && entity2 instanceof Block) {

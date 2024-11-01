@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 public class Attack extends Entity implements Cloneable {
 
     // Proprietà principali dell'attacco
-    private final Entity caster;                  // Entità che ha lanciato l'attacco
+    protected final Entity caster;                  // Entità che ha lanciato l'attacco
     private final int damage;                     // Danno inflitto agli obiettivi
     private final int knockback;                  // Intensità del knockback applicato
     private final boolean meleeAttack;                  // Indica se l'attacco è melee
@@ -39,7 +39,7 @@ public class Attack extends Entity implements Cloneable {
     public Attack(double x, double y, int width, int height, boolean affectedByGravity, Entity caster,
                   int damage, int knockback, boolean meleeAttack, double duration,
                   Consumer<Entity> onCollisionEffect, double reloadTime) {
-        super(x, y, width, height, affectedByGravity, true, 0, 0, caster.isEnemy());
+        super(x, y, width, height, affectedByGravity, true, 0, 0, caster.enemy);
         this.caster = caster;
         this.damage = damage;
         this.knockback = knockback;
@@ -47,6 +47,22 @@ public class Attack extends Entity implements Cloneable {
         this.duration = duration;
         this.onCollisionEffect = onCollisionEffect;
         this.reloadTime = reloadTime;
+    }
+
+    public Attack(double x, double y, int width, int height, boolean affectedByGravity, Entity caster,
+                  int damage, int knockback, double duration,
+                  Consumer<Entity> onCollisionEffect, double reloadTime, double vX, double vY) {
+        super(x, y, width, height, affectedByGravity, true, 0, 0, caster.enemy);
+        this.caster = caster;
+        this.damage = damage;
+        this.knockback = knockback;
+        this.meleeAttack = false;
+        this.duration = duration;
+        this.onCollisionEffect = onCollisionEffect;
+        this.reloadTime = reloadTime;
+
+        velocityX = vX;
+        velocityY = vY;
     }
 
     // Metodi principali
@@ -73,20 +89,21 @@ public class Attack extends Entity implements Cloneable {
      */
     @Override
     public void onCollision(Entity other) {
-        super.onCollision(other);
-
-        if (other == caster || this.isEnemy() == other.isEnemy() || damagedEntities.contains(other)) {
+        if (other == caster || this.enemy == other.enemy || damagedEntities.contains(other)) {
             return;
         }
+
+        damagedEntities.add(other);
 
         if (!(other instanceof Block)) {
             damagedEntities.add(other);
             if (other instanceof LivingEntity) {
                 applyDamageAndKnockback((LivingEntity) other);
-                if (onCollisionEffect != null) {
-                    onCollisionEffect.accept(other);
-                }
             }
+        }
+
+        if (onCollisionEffect != null) {
+            onCollisionEffect.accept(other);
         }
     }
 

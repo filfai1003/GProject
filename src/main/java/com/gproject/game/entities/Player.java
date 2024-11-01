@@ -1,7 +1,7 @@
 package com.gproject.game.entities;
 
 import com.gproject.game.manage.Game;
-import com.gproject.game.render.DynamicAnimation;
+import com.gproject.game.render.Animation;
 
 import java.util.HashMap;
 
@@ -49,6 +49,7 @@ public class Player extends LivingEntity {
     private double lastJump = 0;
     public PlayerDirection direction = RIGHT;
 
+
     /**
      * Costruttore per il giocatore.
      *
@@ -57,11 +58,7 @@ public class Player extends LivingEntity {
      */
     public Player(double x, double y) {
         super(x, y, P_WIDTH, P_HEIGHT, true, true, P_SPEED_LIMIT_X, P_SPEED_LIMIT_Y,
-                P_FRICTION, P_AIR_FRICTION, P_MAX_HEALTH, P_ACCELERATION, P_JUMP_SPEED, false);
-        DynamicAnimation d = new DynamicAnimation(0, 0, width, height, 5, 7, "assets/images/player");
-        HashMap<String, DynamicAnimation> animations = new HashMap<>();
-        animations.put("", d);
-        dynamicAnimations = animations;
+                P_FRICTION, P_AIR_FRICTION, P_MAX_HEALTH, P_ACCELERATION, P_JUMP_SPEED, Relation.PLAYER);
     }
 
     /**
@@ -75,9 +72,10 @@ public class Player extends LivingEntity {
         if (lastDash > P_VIGOR_WAIT_TIME && lastJump > P_VIGOR_WAIT_TIME) {
             vigor = Math.min(vigor + P_VIGOR_RELOAD * seconds, maxVigor);
         }
-        super.update(seconds, game);
         lastDash += seconds;
         lastJump += seconds;
+
+        super.update(seconds, game);
     }
 
     /**
@@ -107,7 +105,7 @@ public class Player extends LivingEntity {
     @Override
     public void goLeft(double seconds) {
         status = "run";
-        velocityX -= (acceleration + (isOnGround() ? getFriction() : getAirFriction())) * seconds;
+        velocityX -= (acceleration + (isOnGround() ? friction : airFriction)) * seconds;
         if (velocityX < -velocityLimitX && lastDash > P_DASH_TIME) {
             velocityX = -velocityLimitX;
         }
@@ -118,7 +116,7 @@ public class Player extends LivingEntity {
     @Override
     public void goRight(double seconds) {
         status = "run";
-        velocityX += (acceleration + (isOnGround() ? getFriction() : getAirFriction())) * seconds;
+        velocityX += (acceleration + (isOnGround() ? friction : airFriction)) * seconds;
         if (velocityX > velocityLimitX && lastDash > P_DASH_TIME) {
             velocityX = velocityLimitX;
         }
@@ -131,17 +129,19 @@ public class Player extends LivingEntity {
      */
     @Override
     public void jump() {
-        if (vigor > P_JUMP_VIGOR) {
+        if (vigor > 0) {
             if (isOnGround()) {
                 velocityY = -jumpSpeed;
                 lastOnGround = 1;
                 vigor -= P_JUMP_VIGOR;
                 lastJump = 0;
+                vigor = Math.max(0, vigor);
             } else if (onSingleJump) {
                 velocityY = -jumpSpeed;
                 onSingleJump = false;
                 vigor -= P_JUMP_VIGOR;
                 lastJump = 0;
+                vigor = Math.max(0, vigor);
             }
         }
     }
@@ -150,11 +150,11 @@ public class Player extends LivingEntity {
      * Gestisce l'abilità di Dash del giocatore.
      */
     public void dash() {
-        if (vigor > P_DASH_VIGOR && lastDash > P_DASH_RELOAD_TIME) {
-            dynamicAnimations.get("").startOverrideAnimation(P_DASH_TIME, new DynamicAnimation(0, 0, width, height, (int) (17/P_DASH_TIME), 17, "assets/images/player/dash"));
+        if (vigor > 0 && lastDash > P_DASH_RELOAD_TIME) {
             velocityX = d * P_DASH_SPEED;
             lastDash = 0;
             vigor -= P_DASH_VIGOR;
+            vigor = Math.max(0, vigor);
         }
     }
 
@@ -187,13 +187,5 @@ public class Player extends LivingEntity {
 
     public int getMaxCharge() {
         return maxCharge;
-    }
-
-    @Override
-    public String getStatus() {
-        if (!isOnGround() && lastDash > P_DASH_TIME + P_COYOTE_TIME) {
-            status = "jump";
-        }
-        return super.getStatus();
     }
 }
