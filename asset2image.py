@@ -10,16 +10,16 @@ def divide_image(image_path, frame_width, frame_height):
         rows = height // frame_height
         columns = width // frame_width
 
+        frame_count = 0
         for row in range(rows):
-            row_dir = os.path.join(output_dir, str(row))
-            os.makedirs(row_dir, exist_ok=True)
             for col in range(columns):
                 left = col * frame_width
                 upper = row * frame_height
                 right = left + frame_width
                 lower = upper + frame_height
                 frame = sprite_sheet.crop((left, upper, right, lower))
-                frame.save(os.path.join(row_dir, f"{col}.png"))
+                frame.save(os.path.join(output_dir, f"{frame_count}.png"))
+                frame_count += 1
         print(f"Immagine divisa e salvata nella cartella '{output_dir}'")
     except Exception as e:
         print(f"Errore nella divisione dell'immagine: {e}")

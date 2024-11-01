@@ -49,6 +49,8 @@ public class Player extends LivingEntity {
     private double lastJump = 0;
     public PlayerDirection direction = RIGHT;
 
+    private String lastStatus = " ";
+
     /**
      * Costruttore per il giocatore.
      *
@@ -75,9 +77,14 @@ public class Player extends LivingEntity {
         if (lastDash > P_VIGOR_WAIT_TIME && lastJump > P_VIGOR_WAIT_TIME) {
             vigor = Math.min(vigor + P_VIGOR_RELOAD * seconds, maxVigor);
         }
-        super.update(seconds, game);
         lastDash += seconds;
         lastJump += seconds;
+        if (status != lastStatus) {
+            // todo dynamicAnimations.get("torso").time = 0;
+            lastStatus = status;
+        }
+
+        super.update(seconds, game);
     }
 
     /**
